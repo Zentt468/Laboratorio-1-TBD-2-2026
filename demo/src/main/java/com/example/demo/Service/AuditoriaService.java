@@ -15,13 +15,17 @@ public class AuditoriaService {
 
     private final AuditoriaRepository auditoriaRepository;
 
+    public List<AuditoriaEntity> getAllAuditorias() {
+        return auditoriaRepository.findAll();
+    }
+
     //Obtener historial de una alojamiento
-    public List<AuditoriaEntity> getHistorialByAlojamientoId(Integer idAlojamiento) {
+    public List<AuditoriaEntity> getAuditoriaByAlojamientoId(Integer idAlojamiento) {
         return auditoriaRepository.findByAlojamientoId(idAlojamiento);
     }
 
     //Obtener historial por su id
-    public Optional<AuditoriaEntity> getHistorialById(Integer idAuditoria) {
+    public Optional<AuditoriaEntity> getAuditoriaById(Integer idAuditoria) {
         return auditoriaRepository.findById(idAuditoria);
     }
 }

@@ -18,6 +18,17 @@ public class AuditoriaRepository {
         this.jdbcClient = jdbcClient;
     }
 
+    public List<AuditoriaEntity> findAll() {
+        String sql = """
+            SELECT * FROM auditoria
+            ORDER BY fecha DESC
+        """;
+
+        return jdbcClient.sql(sql)
+                .query(auditoriaRowMapper)
+                .list();
+    }
+
     // Obtener historial de una alojamiento
     public List<AuditoriaEntity> findByAlojamientoId(Integer idAlojamiento) {
         String sql = """

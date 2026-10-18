@@ -43,7 +43,7 @@ public class PagoRepository {
     }
 
     //Buscar por id de reserva
-    public List<PagoEntity> findByAlojamiento(Integer idReserva) {
+    public List<PagoEntity> findByReserva(Integer idReserva) {
         String sql = """
             SELECT * FROM pago
             WHERE id_reserva = :idReserva

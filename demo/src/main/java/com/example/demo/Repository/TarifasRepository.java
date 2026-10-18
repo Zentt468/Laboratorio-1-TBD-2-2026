@@ -5,7 +5,7 @@ import com.example.demo.Repository.RowMapper.TarifasRowMapper;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +58,7 @@ public class TarifasRepository {
     }
 
     //4. Obtener tarifa por temporada y alojamiento
-    public Optional<TarifasEntity> findByTemporadaAndAlojamiento(String temporada, int id_alojamiento){
+    public Optional<TarifasEntity> findByTemporadaAndAlojamiento(String temporada, Integer id_alojamiento){
         String sql = """
             SELECT id_tarifa, id_alojamiento, temporada, fecha_inicio, fecha_fin, precio
             FROM tarifas
@@ -73,7 +73,7 @@ public class TarifasRepository {
     }
 
     //5. Obtener tarifas entre fechas
-    public List<TarifasEntity> findByFechaBetween(String fecha_inicio, String fecha_fin){
+    public List<TarifasEntity> findByFechaBetween(Date fecha_inicio, Date fecha_fin){
         String sql = """
             SELECT id_tarifa, id_alojamiento, temporada, fecha_inicio, fecha_fin, precio
             FROM tarifas
@@ -85,6 +85,7 @@ public class TarifasRepository {
                 .param("fecha_fin", fecha_fin)
                 .query(tarifasRowMapper)
                 .list();
+        
     }
 
     //6. Crear una nueva tarifa
@@ -141,8 +142,17 @@ public class TarifasRepository {
                 .update();
     }
     
-
-
-
-
+    //9. Obtener tarifas por id de alojamiento
+    public List<TarifasEntity> findByAlojamiento(Integer id_alojamiento){
+        String sql = """
+            SELECT id_tarifa, id_alojamiento, temporada, fecha_inicio, fecha_fin, precio
+            FROM tarifas
+            WHERE id_alojamiento = :id_alojamiento
+        """;
+        return jdbcClient.sql(sql)
+                .param("id_alojamiento", id_alojamiento)
+                .query(tarifasRowMapper)
+                .list();
+     }
 }
+

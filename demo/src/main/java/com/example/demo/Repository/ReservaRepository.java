@@ -67,25 +67,21 @@ public class ReservaRepository {
                 .list();
     }
 
-    public boolean canPostAReview(Integer idReserva, Integer idUsuario) {
+    public boolean existsByReservaId(Integer idReserva) {
         String sql = """
-            SELECT COUNT(*)
-            FROM reserva
+            SELECT COUNT(*) FROM reserva
             WHERE id_reserva = :idReserva
-            AND id_usuario = :idUsuario
-            AND (estado_reserva = 'CONFIRMADA')
-        """;
-
+            """;
+        
         Integer count = jdbcClient.sql(sql)
                 .param("idReserva", idReserva)
-                .param("idUsuario", idUsuario)
                 .query(Integer.class)
                 .single();
-        
+
         return count > 0;
     }
 
-    public Integer save(ReservaEntity reserva) {
+    public void save(ReservaEntity reserva) {
         String sql = """
             INSERT INTO reservas (
                 id_usuario, id_alojamiento, n_huespedes,
@@ -96,27 +92,25 @@ public class ReservaRepository {
                 RETURNING id_reserva
         """;
 
-        return jdbcClient.sql(sql)
-                .param("idUsuario", reserva.getId_usuario())
-                .param("idAlojamiento", reserva.getId_alojamiento())
-                .param("nHuespedes", reserva.getN_huespedes())
-                .param("fechaInicio", reserva.getFecha_inicio())
-                .param("fechaFin", reserva.getFecha_fin())
-                .param("estadoReserva", reserva.getEstado_reserva())
-                .param("precioTotal", reserva.getPrecio_total())
-                .query(Integer.class)
-                .single();
+        jdbcClient.sql(sql)
+            .param("idUsuario", reserva.getId_usuario())
+            .param("idAlojamiento", reserva.getId_alojamiento())
+            .param("nHuespedes", reserva.getN_huespedes())
+            .param("fechaInicio", reserva.getFecha_inicio())
+            .param("fechaFin", reserva.getFecha_fin())
+            .param("estadoReserva", reserva.getEstado_reserva())
+            .param("precioTotal", reserva.getPrecio_total())
+            .update();
     }
 
-    public boolean delete(Integer idReserva) {
+    public void delete(Integer idReserva) {
         String sql = """
             DELETE FROM reserva
             WHERE id_reserva = :idReserva
         """;
 
-        int filasAfectadas = jdbcClient.sql(sql)
+        jdbcClient.sql(sql)
                 .param("idReserva", idReserva)
                 .update();
-        return filasAfectadas > 0;
     }
 }
