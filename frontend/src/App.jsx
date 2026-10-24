@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSearch from './components/HeroSearch';
 import AlojamientoCard from './components/AlojamientoCard';
@@ -7,13 +7,41 @@ import MisViajesPage from './pages/MisViajesPage';
 import PublicarAlojamientoPage from './pages/PublicarAlojamientoPage';
 
 
-export default function App() {
+export default function App({ keycloak }) {
   // Estado para alternar entre pantallas ('home', 'viajes', 'publicar')
     const [vistaActual, setVistaActual] = useState('home');
     const [alojamientos, setAlojamientos] = useState(ALOJAMIENTOS_MOCK);
-
     const [alojamientoSeleccionado, setAlojamientoSeleccionado] = useState(null);
     const [misReservas, setMisReservas] = useState([]);
+    const [usuarioActual, setUsuarioActual] = useState(null);
+
+
+    useEffect(() => {
+    if (keycloak && keycloak.authenticated) {
+      const roles = keycloak.tokenParsed?.realm_access?.roles || [];
+      setUsuarioActual({
+        id: keycloak.tokenParsed?.sub,
+        nombre: keycloak.tokenParsed?.name || keycloak.tokenParsed?.preferred_username,
+        email: keycloak.tokenParsed?.email,
+        roles: roles,
+      });
+      } else {
+        setUsuarioActual(null);
+      }
+    }, [keycloak]);
+
+    const handleLogin = () => {
+      if (keycloak) {
+        keycloak.login();
+      }
+    };
+
+    const handleLogout = () => {
+      if (keycloak) {
+        keycloak.logout({ redirectUri: window.location.origin });
+      }
+    };
+
     // Funciones para manejar la búsqueda y la reserva
     const handleBuscar = (filtros) => {
         if (!filtros.ciudad.trim()) {
@@ -27,11 +55,11 @@ export default function App() {
     };
 
     const handleAbrirModal = (alojamiento) => {
+        if (!usuarioActual) {
+          handleLogin();
+          return;
+        }
         setAlojamientoSeleccionado(alojamiento);
-    };
-
-    const handleCerrarModal = () => {
-        setAlojamientoSeleccionado(null);
     };
 
     const handleConfirmarReserva = (datosReserva) => {
@@ -77,7 +105,13 @@ export default function App() {
     // Visual
   return (
     <div className="min-vh-100 bg-white d-flex flex-column">
-      <Navbar vistaActual={vistaActual} setVistaActual={setVistaActual} />
+      <Navbar
+      vistaActual={vistaActual}
+      setVistaActual={setVistaActual}
+      usuarioActual={usuarioActual}
+      onLogin={handleLogin}
+      onLogout={handleLogout}
+      />
 
       <main className="flex-grow-1">
         {vistaActual === 'home' && (
@@ -111,7 +145,7 @@ export default function App() {
             onVolverHome={() => setVistaActual('home')}
             />
         )}
-        
+
         {vistaActual === 'publicar' && (
           <PublicarAlojamientoPage
             onPublicarExitoso={handlePublicarExitoso}
@@ -124,7 +158,7 @@ export default function App() {
       {alojamientoSeleccionado && (
         <ReservaModal
           alojamiento={alojamientoSeleccionado}
-          onClose={handleCerrarModal}
+          onClose={() => setAlojamientoSeleccionado(null)}
           onConfirmarReserva={handleConfirmarReserva}
         />
       )}

@@ -1,14 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
+import keycloak from './services/keycloak';
 
-// Importar CSS y JS de Bootstrap + Iconos
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+keycloak
+  .init({
+    onLoad: 'check-sso',
+    pkceMethod: 'S256',
+    silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+  })
+  .then(() => {
+    root.render(
+      <React.StrictMode>
+        <App keycloak={keycloak} />
+      </React.StrictMode>
+    );
+  })
+  .catch((err) => {
+    console.error('Error al inicializar Keycloak:', err);
+    root.render(
+      <React.StrictMode>
+        <App keycloak={null} />
+      </React.StrictMode>
+    );
+  });
