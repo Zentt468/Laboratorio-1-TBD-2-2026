@@ -4,6 +4,8 @@ import HeroSearch from './components/HeroSearch';
 import AlojamientoCard from './components/AlojamientoCard';
 import ReservaModal from './components/ReservaModal';
 import MisViajesPage from './pages/MisViajesPage';
+import PublicarAlojamientoPage from './pages/PublicarAlojamientoPage';
+
 
 export default function App() {
   // Estado para alternar entre pantallas ('home', 'viajes', 'publicar')
@@ -60,6 +62,18 @@ export default function App() {
         }
     };
 
+    const handlePublicarExitoso = (nuevoAlojamiento) => {
+      const alojamientoCreado = {
+        id: Date.now(), // ID temporal local
+        ...nuevoAlojamiento,
+      };
+
+      // se agrega el nuevo alojamiento al inicio de la lista
+      setAlojamientos([alojamientoCreado, ...alojamientos]);
+      alert('¡Propiedad publicada exitosamente!');
+      setVistaActual('home');
+    };
+
     // Visual
   return (
     <div className="min-vh-100 bg-white d-flex flex-column">
@@ -97,12 +111,12 @@ export default function App() {
             onVolverHome={() => setVistaActual('home')}
             />
         )}
-
+        
         {vistaActual === 'publicar' && (
-          <div className="container py-5">
-            <h2 className="fw-bold">Publicar Alojamiento</h2>
-            <p className="text-muted">Aquí irá el formulario para el anfitrión.</p>
-          </div>
+          <PublicarAlojamientoPage
+            onPublicarExitoso={handlePublicarExitoso}
+            onCancelar={() => setVistaActual('home')}
+          />
         )}
       </main>
 
