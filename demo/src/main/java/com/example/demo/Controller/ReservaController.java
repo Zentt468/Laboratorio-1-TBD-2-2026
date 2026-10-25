@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.DTO.ConfirmarReservaRequest;
 import com.example.demo.Entity.ReservaEntity;
 import com.example.demo.Service.ReservaService;
 import com.example.demo.Service.UsuarioService;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -96,5 +98,29 @@ public class ReservaController {
 
         reservaService.deleteReservaById(id);
         return ResponseEntity.ok().build();
+    }
+
+    //Procedimientos almacenados
+
+    @PostMapping("/confirmar")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<?> confirmarReserva(@RequestBody ConfirmarReservaRequest request) {
+    if (usuarioService.getUsuarioPorId(request.getIdUsuario()).isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+    }
+
+    Integer idReserva = reservaService.confirmarReserva(request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("idReserva", idReserva));
+    }
+
+    @PostMapping("/{id}/cancelar")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<?> cancelarReserva(@PathVariable Integer id) {
+    if (!reservaService.existsReserva(id)) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva no encontrada");
+    }
+
+    reservaService.cancelarReserva(id);
+    return ResponseEntity.ok(Map.of("mensaje", "Reserva cancelada"));
     }
 }

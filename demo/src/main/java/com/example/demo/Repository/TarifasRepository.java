@@ -5,7 +5,7 @@ import com.example.demo.Repository.RowMapper.TarifasRowMapper;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +23,7 @@ public class TarifasRepository {
     public Optional<TarifasEntity> findById(int id_tarifa){
         String sql = """
             SELECT id_tarifa, id_alojamiento, temporada, fecha_inicio, fecha_fin, precio
-            FROM tarifas
+            FROM tarifa
             WHERE id_tarifa = :id_tarifa
         """;
 
@@ -36,7 +36,7 @@ public class TarifasRepository {
     public List<TarifasEntity> findAll(){
         String sql = """
             SELECT id_tarifa, id_alojamiento, temporada, fecha_inicio, fecha_fin, precio
-            FROM tarifas
+            FROM tarifa
         """;
         return jdbcClient.sql(sql)
                 .query(tarifasRowMapper)
@@ -47,7 +47,7 @@ public class TarifasRepository {
     public List<TarifasEntity> findByTemporada(String temporada){
         String sql = """
             SELECT id_tarifa, id_alojamiento, temporada, fecha_inicio, fecha_fin, precio
-            FROM tarifas
+            FROM tarifa
             WHERE temporada = :temporada
         """;
 
@@ -61,7 +61,7 @@ public class TarifasRepository {
     public Optional<TarifasEntity> findByTemporadaAndAlojamiento(String temporada, Integer id_alojamiento){
         String sql = """
             SELECT id_tarifa, id_alojamiento, temporada, fecha_inicio, fecha_fin, precio
-            FROM tarifas
+            FROM tarifa
             WHERE temporada = :temporada AND id_alojamiento = :id_alojamiento
         """;
 
@@ -73,10 +73,10 @@ public class TarifasRepository {
     }
 
     //5. Obtener tarifas entre fechas
-    public List<TarifasEntity> findByFechaBetween(Date fecha_inicio, Date fecha_fin){
+    public List<TarifasEntity> findByFechaBetween(LocalDate fecha_inicio, LocalDate fecha_fin){
         String sql = """
             SELECT id_tarifa, id_alojamiento, temporada, fecha_inicio, fecha_fin, precio
-            FROM tarifas
+            FROM tarifa
             WHERE fecha_inicio >= :fecha_inicio AND fecha_fin <= :fecha_fin
         """;
 
@@ -91,7 +91,7 @@ public class TarifasRepository {
     //6. Crear una nueva tarifa
     public TarifasEntity save(TarifasEntity tarifa) {
         String sql = """
-            INSERT INTO tarifas(id_alojamiento, temporada, fecha_inicio, fecha_fin, precio)
+            INSERT INTO tarifa(id_alojamiento, temporada, fecha_inicio, fecha_fin, precio)
             Values(?, ?, ?, ?, ?)
             RETURNING id_tarifa
         """;
@@ -111,7 +111,7 @@ public class TarifasRepository {
     //7. Actualizar una tarifa existente
     public TarifasEntity update(TarifasEntity cambios){
         String sql = """
-                UPDATE tarifas
+                UPDATE tarifa
                 SET id_tarifa =?, id_alojamiento = ?, temporada = ?, fecha_inicio = ?, fecha_fin = ?, precio = ?
                 WHERE id_tarifa = ?
             """;
@@ -155,4 +155,3 @@ public class TarifasRepository {
                 .list();
      }
 }
-

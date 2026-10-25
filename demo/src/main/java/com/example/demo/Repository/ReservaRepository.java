@@ -6,6 +6,7 @@ import com.example.demo.Repository.RowMapper.ReservaRowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,5 +113,35 @@ public class ReservaRepository {
         jdbcClient.sql(sql)
                 .param("idReserva", idReserva)
                 .update();
+    }
+
+    //Procedimientos almacenados
+
+    public Integer confirmarReserva(Integer idUsuario, Integer idAlojamiento,
+                                LocalDate fechaInicio, LocalDate fechaFin,
+                                Integer nHuespedes, String tipoPago) {
+    String sql = """
+        CALL sp_confirmar_reserva(
+            :idUsuario, :idAlojamiento,
+            CAST(:fechaInicio AS DATE), CAST(:fechaFin AS DATE),
+            :nHuespedes, :tipoPago, NULL)
+    """;
+
+    // El parámetro INOUT p_id_reserva vuelve como una fila con una columna
+    return jdbcClient.sql(sql)
+            .param("idUsuario", idUsuario)
+            .param("idAlojamiento", idAlojamiento)
+            .param("fechaInicio", fechaInicio)
+            .param("fechaFin", fechaFin)
+            .param("nHuespedes", nHuespedes)
+            .param("tipoPago", tipoPago)
+            .query(Integer.class)
+            .single();
+    }
+
+    public void cancelarReserva(Integer idReserva) {
+    jdbcClient.sql("CALL cancelarReserva(:idReserva)")
+            .param("idReserva", idReserva)
+            .update();
     }
 }

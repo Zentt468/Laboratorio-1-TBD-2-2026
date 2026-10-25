@@ -13,8 +13,8 @@ public class TarifasRowMapper implements RowMapper<TarifasEntity> {
                 .id_tarifa(rs.getInt("id_tarifa"))
                 .id_alojamiento(rs.getInt("id_alojamiento"))
                 .temporada(rs.getString("temporada"))
-                .fecha_inicio(rs.getTimestamp("fecha_inicio")) 
-                .fecha_fin(rs.getTimestamp("fecha_fin"))
+                .fecha_inicio(rs.getDate("fecha_inicio").toLocalDate()) 
+                .fecha_fin(rs.getDate("fecha_fin").toLocalDate())
                 .precio(rs.getDouble("precio"))
                 .build();
     }

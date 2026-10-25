@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
-import java.util.Date;
+import java.time.LocalDate;
 
 
 @Data
@@ -17,8 +17,8 @@ public class ReservaEntity {
     private Integer id_usuario; //Llave foranea de usuario
     private Integer id_alojamiento; //Llave foranea de alojamiento
     private Integer n_huespedes;
-    private Date fecha_inicio;
-    private Date fecha_fin;
+    private LocalDate fecha_inicio;
+    private LocalDate fecha_fin;
     private String estado_reserva;
     private Integer precio_total;
     

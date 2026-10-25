@@ -1,6 +1,6 @@
 package com.example.demo.Entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 import lombok.*;
 
 @Data
@@ -12,7 +12,7 @@ public class TarifasEntity {
     private Integer id_tarifa; //Llave primaria de tarifa
     private Integer id_alojamiento; //Llave foranea de alojamiento
     private String temporada;
-    private Date fecha_inicio;
-    private Date fecha_fin;
+    private LocalDate fecha_inicio;
+    private LocalDate fecha_fin;
     private Double precio;
 }

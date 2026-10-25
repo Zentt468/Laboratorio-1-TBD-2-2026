@@ -103,4 +103,19 @@ public class ResenaController {
         return ResponseEntity.ok("Resena eliminada exitosamente.");
     }
 
+    // Endpoint para obtener el promedio y el historial de un alojamiento
+    @GetMapping("/alojamiento/{idAlojamiento}/resumen")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<?> getResumenResenas(@PathVariable Integer idAlojamiento) {
+        
+        // Validamos si el alojamiento realmente existe usando el alojamientoService
+        Optional<AlojamientoEntity> alojamiento = alojamientoService.getAlojamientoById(idAlojamiento);
+        if (!alojamiento.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alojamiento no encontrado");
+        }
+        
+        // Llamamos al servicio que nos devuelve el DTO armado y lo enviamos en la respuesta
+        return ResponseEntity.ok(resenaService.getResumenResenasByAlojamientoId(idAlojamiento));
+    }
+
 }

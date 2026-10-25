@@ -5,6 +5,7 @@ import com.example.demo.Repository.ResenaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.demo.DTO.ResumenResenaDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,5 +49,20 @@ public class ResenaService {
     //Eliminar reseña por id
     public void deleteResenaById(Integer idResena) {
         resenaRepository.deleteById(idResena);
+    }
+
+    // Obtener resumen de reseñas 
+    public ResumenResenaDTO getResumenResenasByAlojamientoId(Integer idAlojamiento) {
+        //Se obtiene el número promedio
+        Double promedio = resenaRepository.getPromedioByAlojamientoId(idAlojamiento);
+        
+        //Se obtiene la lista de reseñas 
+        List<ResenaEntity> historial = resenaRepository.findByAlojamiento(idAlojamiento);
+        
+        //Se crea y devuelve al DTO 
+        return ResumenResenaDTO.builder()
+                .promedio(promedio)
+                .historial(historial)
+                .build();
     }
 }

@@ -112,5 +112,14 @@ public class ResenaRepository {
                         .update();
     }
 
+    // Obtener promedio de calificación de un alojamiento
+    public Double getPromedioByAlojamientoId(Integer idAlojamiento) {
+        String sql = "SELECT COALESCE(AVG(calificacion), 0.0) FROM resena WHERE id_alojamiento = :idAlojamiento";
+        return jdbcClient.sql(sql)
+                .param("idAlojamiento", idAlojamiento)
+                .query(Double.class)
+                .single();
+    }
+
 
 }

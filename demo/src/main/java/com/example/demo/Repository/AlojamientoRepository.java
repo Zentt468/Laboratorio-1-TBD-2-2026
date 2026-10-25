@@ -177,5 +177,29 @@ public class AlojamientoRepository{
                         .update();
     }
 
+    // Obtener alojamientos disponibles validando fechas con GIST
+    public List<AlojamientoEntity> findDisponibles(String ciudad, java.time.LocalDate fechaInicio, java.time.LocalDate fechaFin, Integer huespedes) {
+        // Consulta SQL para obtener alojamientos disponibles en la ciudad, fechas y cantidad de huéspedes especificados
+        // Con el operador && hacemos el llamado a GIST para validar que no se solapen las fechas de reserva con las fechas de búsqueda
+        String sql = """
+            SELECT a.* FROM alojamiento a
+            WHERE a.ciudad = :ciudad
+              AND a.capacidad >= :huespedes
+              AND a.id_alojamiento NOT IN (
+                  SELECT r.id_alojamiento FROM reserva r
+                  WHERE r.estado_reserva IN ('CONFIRMADA', 'COMPLETADA')
+                  AND daterange(r.fecha_inicio, r.fecha_fin) && daterange(CAST(:fechaInicio AS date), CAST(:fechaFin AS date))
+              )
+        """;
+        return jdbcClient.sql(sql)
+                .param("ciudad", ciudad)
+                .param("huespedes", huespedes)
+                .param("fechaInicio", fechaInicio)
+                .param("fechaFin", fechaFin)
+                .query(alojamientoRowMapper)
+                .list();
+    }
+
+
 
 }

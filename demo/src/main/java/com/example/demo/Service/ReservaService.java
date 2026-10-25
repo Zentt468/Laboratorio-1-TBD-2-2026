@@ -1,5 +1,6 @@
 package com.example.demo.Service;
 
+import com.example.demo.DTO.ConfirmarReservaRequest;
 import com.example.demo.Entity.ReservaEntity;
 import com.example.demo.Repository.ReservaRepository;
 import org.springframework.stereotype.Service;
@@ -47,5 +48,18 @@ public class ReservaService {
 
     public void deleteReservaById(Integer idReserva) {
         reservaRepository.delete(idReserva);
+    }
+
+    //Procedimientos almacenados
+
+    public Integer confirmarReserva(ConfirmarReservaRequest r) {
+    return reservaRepository.confirmarReserva(
+        r.getIdUsuario(), r.getIdAlojamiento(),
+        r.getFechaInicio(), r.getFechaFin(),
+        r.getNHuespedes(), r.getTipoPago());
+    }
+
+    public void cancelarReserva(Integer idReserva) {
+    reservaRepository.cancelarReserva(idReserva);
     }
 }

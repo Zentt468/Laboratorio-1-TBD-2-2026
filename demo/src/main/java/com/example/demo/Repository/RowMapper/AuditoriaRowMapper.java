@@ -16,7 +16,7 @@ public class AuditoriaRowMapper implements RowMapper<AuditoriaEntity> {
                 .valor_anterior(rs.getString("valor_anterior"))
                 .valor_nuevo(rs.getString("valor_nuevo"))
                 .usuario_cambio(rs.getString("usuario_cambio"))
-                .fecha_cambio(rs.getTimestamp("fecha_cambio"))
+                .fecha_cambio(rs.getDate("fecha_cambio").toLocalDate())
                 .build();
     }
 }

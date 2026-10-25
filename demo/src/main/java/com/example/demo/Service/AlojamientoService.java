@@ -71,5 +71,10 @@ public class AlojamientoService {
         alojamientoRepository.deleteById(idAlojamiento);
     }
 
+    // Buscar alojamientos disponibles
+    public List<AlojamientoEntity> buscarDisponibles(String ciudad, java.time.LocalDate fechaInicio, java.time.LocalDate fechaFin, Integer huespedes) {
+        return alojamientoRepository.findDisponibles(ciudad, fechaInicio, fechaFin, huespedes);
+    }
+
 
 }

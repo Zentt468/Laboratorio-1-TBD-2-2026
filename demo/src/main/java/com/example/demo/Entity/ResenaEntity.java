@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
-import java.util.Date;
+import java.time.LocalDate;
 
 
 @Data
@@ -20,7 +20,7 @@ public class ResenaEntity {
     private String titulo_resena;
     private String comentario;
     private Integer calificacion;
-    private Date fecha_resena;
+    private LocalDate fecha_resena;
     private String estado;
     
 }

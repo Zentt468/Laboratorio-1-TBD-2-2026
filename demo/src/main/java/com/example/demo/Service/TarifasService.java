@@ -7,7 +7,7 @@ import com.example.demo.Entity.AlojamientoEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +41,7 @@ public class TarifasService {
     }
 
     //5. Obtener tarifas entre fechas
-    public List<TarifasEntity> getTarifasBetweenFechas(Date fechaInicio, Date fechaFin) {
+    public List<TarifasEntity> getTarifasBetweenFechas(LocalDate fechaInicio, LocalDate fechaFin) {
         return tarifasRepository.findByFechaBetween(fechaInicio, fechaFin);
     }
 

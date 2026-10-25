@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,7 +92,7 @@ public class TarifasController {
     //Obtener tarifas entre fechas
     @GetMapping("/fechas")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getTarifasBetweenFechas(@RequestParam Date fechaInicio, @RequestParam Date fechaFin) {
+    public ResponseEntity<?> getTarifasBetweenFechas(@RequestParam LocalDate fechaInicio, @RequestParam LocalDate fechaFin) {
         List<TarifasEntity> tarifas = tarifasService.getTarifasBetweenFechas(fechaInicio, fechaFin);
         //Se verifica si se encontraron tarifas para el rango de fechas especificado
         if (tarifas.isEmpty()) {

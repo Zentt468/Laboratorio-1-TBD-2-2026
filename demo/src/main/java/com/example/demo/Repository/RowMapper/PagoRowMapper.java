@@ -13,7 +13,7 @@ public class PagoRowMapper implements RowMapper<PagoEntity> {
                 .id_pago(rs.getInt("id"))
                 .id_reserva(rs.getInt("id_reserva"))
                 .monto_pago(rs.getInt("monto_pago"))
-                .fecha_pago(rs.getTimestamp("fecha_pago"))
+                .fecha_pago(rs.getDate("fecha_pago").toLocalDate())
                 .tipo_pago(rs.getString("tipo_pago"))
                 .build();
     }

@@ -17,7 +17,7 @@ public class ResenaRowMapper implements RowMapper<ResenaEntity> {
                 .titulo_resena(rs.getString("titulo_resena"))
                 .comentario(rs.getString("comentario"))
                 .calificacion(rs.getInt("calificacion"))
-                .fecha_resena(rs.getTimestamp("fecha_resena"))
+                .fecha_resena(rs.getDate("fecha_resena").toLocalDate())
                 .estado(rs.getString("estado"))
                 .build();
     }

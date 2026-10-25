@@ -172,4 +172,23 @@ public class AlojamientoController {
         alojamientoService.deleteAlojamientoById(id);
         return ResponseEntity.ok("Alojamiento eliminado exitosamente.");
     }
+
+    // Endpoint para buscar alojamientos disponibles[cite: 9]
+    @GetMapping("/buscar")
+    @PreAuthorize ("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<?> buscarAlojamientos(@RequestParam String ciudad, @RequestParam String fechaInicio, @RequestParam String fechaFin,@RequestParam Integer huespedes) {
+        //Se buscan los alojamientos que estan disponibles en la ciudad, fechas y cantidad de huespedes especificados
+        List<AlojamientoEntity> disponibles = alojamientoService.buscarDisponibles(
+                ciudad, 
+                java.time.LocalDate.parse(fechaInicio), 
+                java.time.LocalDate.parse(fechaFin), 
+                huespedes
+        );
+        //Si la lista es vacia entoces se retorna un mensaje de que no hay alojamientos disponibles
+        if(disponibles.isEmpty()){
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay alojamientos disponibles con esas características.");
+        }
+        
+        return ResponseEntity.ok(disponibles);
+    }
 }
