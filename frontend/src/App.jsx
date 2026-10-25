@@ -146,7 +146,10 @@ export default function App({ keycloak }) {
               {/* Fila responsiva de 4 columnas */}
               <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
                 {alojamientos.map((item) => (
-                  <div key={item.id} className="col">
+                  <div 
+                    key={item.id_alojamiento ?? item.idAlojamiento ?? item.id} 
+                    className="col"
+                  >
                     <AlojamientoCard
                       alojamiento={item}
                       onReservarClick={handleAbrirModal}

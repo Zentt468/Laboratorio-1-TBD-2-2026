@@ -131,7 +131,7 @@ public class AlojamientoController {
 
     //Guardar alojamiento
     @PostMapping
-    @PreAuthorize ("hasRole('ADMIN')")
+    @PreAuthorize ("hasRole('ANFITRION')")
     public ResponseEntity<?> saveAlojamiento(@RequestBody AlojamientoEntity alojamiento){
         //Se verifica si el usuario asociado al alojamiento existe
         Optional<UsuarioEntity> usuario = usuarioService.getUsuarioPorId(alojamiento.getId_usuario());
@@ -173,7 +173,7 @@ public class AlojamientoController {
         return ResponseEntity.ok("Alojamiento eliminado exitosamente.");
     }
 
-    // Endpoint para buscar alojamientos disponibles[cite: 9]
+    // Endpoint para buscar alojamientos disponibles
     @GetMapping("/buscar")
     @PreAuthorize ("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> buscarAlojamientos(@RequestParam String ciudad, @RequestParam String fechaInicio, @RequestParam String fechaFin,@RequestParam Integer huespedes) {

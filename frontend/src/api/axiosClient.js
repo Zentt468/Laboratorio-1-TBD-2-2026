@@ -1,7 +1,8 @@
 import axios from 'axios';
+import keycloak from '../services/keycloak';
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'http://localhost:8081/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,7 +11,6 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(async (config) => {
   if (keycloak && keycloak.authenticated) {
     try {
-      // Renueva el token si le quedan menos de 30 segundos de vida
       await keycloak.updateToken(30);
       config.headers.Authorization = `Bearer ${keycloak.token}`;
     } catch (error) {
