@@ -55,17 +55,7 @@ public class UsuarioController {
         }
     }
 
-    //4. Buscar usuario por RUT
-    @GetMapping("/rut/{rut}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<UsuarioEntity> buscarUsuarioPorRut(@PathVariable String rut){
-        Optional<UsuarioEntity> usuario = usuarioService.getUsuarioPorRut(rut);
-        if(usuario.isPresent()){
-            return ResponseEntity.ok(usuario.get());
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
+
 
     //5. Crear usuario
     @PostMapping("/")
@@ -74,10 +64,7 @@ public class UsuarioController {
         if(usuarioService.existsCorreo(usuario.getCorreo())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El correo ya está registrado");
         }
-        if(usuarioService.existsRut(usuario.getRut())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("El RUT ya está registrado");
-        }
-
+    
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.createUsuario(usuario));
     }
 
@@ -89,11 +76,8 @@ public class UsuarioController {
             Optional<UsuarioEntity> usuarioExistente = usuarioService.getUsuarioPorId(id_usuario);
             if(usuarioExistente.isPresent()){
                 UsuarioEntity usuario = usuarioExistente.get();
-                usuario.setRut(usuarioActualizado.getRut());
                 usuario.setNombre(usuarioActualizado.getNombre());
                 usuario.setCorreo(usuarioActualizado.getCorreo());
-                usuario.setContrasena(usuarioActualizado.getContrasena());
-                usuario.setRol(usuarioActualizado.getRol());
                 usuarioService.updateUsuario(usuario);
                 return ResponseEntity.ok("Usuario actualizado correctamente");
             }else{

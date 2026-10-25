@@ -8,10 +8,10 @@ import lombok.*;
 @AllArgsConstructor
 public class UsuarioEntity{
     private Integer id_usuario; //Llave primaria de Usuario
-    private String rut;
+    private Integer keycloak_id;
     private String nombre;
     private String correo;
-    private String contrasena;
-    private String rol;
+    
+    
     
 }

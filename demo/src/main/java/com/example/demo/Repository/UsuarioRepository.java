@@ -22,7 +22,7 @@ public class UsuarioRepository {
     //1. Obtener usuario por id
     public Optional<UsuarioEntity> findById(Integer idUsuario) {
         String sql  = """
-            SELECT id_usuario, rut, nombre, correo, contrasena, rol
+            SELECT id_usuario,keycloak_id, nombre, correo
             FROM usuario
             WHERE id_usuario = ?
             """ ;
@@ -32,23 +32,24 @@ public class UsuarioRepository {
                     .optional();
     }
 
-    //2. Buscar por rut
-    public Optional<UsuarioEntity> findByRut(String rut) {
+    //2. Buscar usuario por id de keycloak
+    public Optional<UsuarioEntity> findByKeycloakId(Integer keycloakId) {
         String sql  = """
-            SELECT id_usuario, rut, nombre, correo, contrasena, rol
+            SELECT id_usuario,keycloak_id, nombre, correo
             FROM usuario
-            WHERE rut = ?
+            WHERE keycloak_id = ?
             """ ;
             return jdbcClient.sql(sql)
-                    .param(rut)
+                    .param(keycloakId)
                     .query(usuarioRowMapper)
                     .optional();
     }
 
+
     //3. Buscar por correo
     public Optional<UsuarioEntity> findByCorreo(String correo) {
         String sql  = """
-            SELECT id_usuario, rut, nombre, correo, contrasena, rol
+            SELECT id_usuario,keycloak_id, nombre, correo
             FROM usuario
             WHERE correo = ?
             """ ;
@@ -73,34 +74,19 @@ public class UsuarioRepository {
     }
 
 
-    //5. Verificar si existe el rut en la bd
-    public boolean existsByRut(String rut){
-        String sql = """
-            SELECT COUNT(*) > 0
-            FROM usuario
-            WHERE rut = ?
-            """ ;
 
-        return jdbcClient.sql(sql)
-                .param(rut)
-                .query(Boolean.class)
-                .optional()
-                .orElse(false);
-    }
 
     //6. Crear un nuevo usuario
     public UsuarioEntity save(UsuarioEntity usuario) {
         String sql = """
-            INSERT INTO usuarios(rut, nombre, correo, contrasena, rol)
-            Values(?, ?, ?, ?, ?)
+            INSERT INTO usuarios(keycloak_id, nombre, correo)
+            Values(?, ?, ?)
             RETURNING id_usuario
         """;
         Integer id_generado = jdbcClient.sql(sql)
-                .param(usuario.getRut())
+                .param(usuario.getKeycloak_id())
                 .param(usuario.getNombre())
                 .param(usuario.getCorreo())
-                .param(usuario.getContrasena())
-                .param(usuario.getRol())
                 .query(Integer.class)
                 .single();
 
@@ -113,15 +99,13 @@ public class UsuarioRepository {
     public UsuarioEntity update(UsuarioEntity cambios) {
         String sql  = """
             UPDATE usuario
-            SET rut = ?, nombre = ?, correo = ?, contrasena = ?, rol = ?
+            SET  nombre = ?, correo = ?
             WHERE id_usuario = ?
         """;
         jdbcClient.sql(sql)
-                .param(cambios.getRut())
                 .param(cambios.getNombre())
                 .param(cambios.getCorreo())
-                .param(cambios.getContrasena())
-                .param(cambios.getRol())
+                .param(cambios.getKeycloak_id())
                 .param(cambios.getId_usuario())
                 .update();
         return cambios;
@@ -144,28 +128,12 @@ public class UsuarioRepository {
     //9. Obtener todos los usuarios
     public List<UsuarioEntity> findAll(){
         String sql = """
-            SELECT id_usuario, rut, nombre, correo, contrasena, rol
+            SELECT id_usuario,keycloak_id, nombre, correo
             FROM usuario
         """;
         return jdbcClient.sql(sql)
                 .query(usuarioRowMapper)
                 .list();
     }
-
-    //10. Listar por rol
-    public List<UsuarioEntity> findByRol(String rol){
-        String sql = """
-            SELECT id_usuario, rut, nombre, correo, contrasena, rol
-            FROM usuario
-            WHERE rol = ?
-        """;
-        return jdbcClient.sql(sql)
-                .param(rol)
-                .query(usuarioRowMapper)
-                .list();
-    }
-
-
-
 
 }

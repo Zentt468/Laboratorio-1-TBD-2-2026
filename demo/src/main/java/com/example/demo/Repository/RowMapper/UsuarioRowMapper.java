@@ -12,11 +12,9 @@ public class UsuarioRowMapper implements RowMapper<UsuarioEntity> {
     public UsuarioEntity mapRow(ResultSet rs, int rowNum) throws SQLException{
         return UsuarioEntity.builder()
                 .id_usuario(rs.getInt("id_usuario"))
-                .rut(rs.getString("rut"))
+                .keycloak_id(rs.getInt("keycloak_id"))
                 .nombre(rs.getString("nombre"))
                 .correo(rs.getString("correo"))
-                .contrasena(rs.getString("contrasena"))
-                .rol(rs.getString("rol"))
                 .build();
     }
 }

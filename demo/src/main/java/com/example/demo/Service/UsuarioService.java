@@ -20,9 +20,10 @@ public class UsuarioService {
         return usuarioRepository.findById(id_usuario);
     }
 
-    //2. Buscar por rut
-    public Optional<UsuarioEntity> getUsuarioPorRut(String rut) {
-        return usuarioRepository.findByRut(rut);
+
+    //2. Obtener usuario por id de keycloak
+    public Optional<UsuarioEntity> getUsuarioPorKeycloakId(Integer keycloak_id) {
+        return usuarioRepository.findByKeycloakId(keycloak_id);
     }
 
     //3. Buscar por correo
@@ -34,10 +35,7 @@ public class UsuarioService {
         return usuarioRepository.existsByCorreo(correo);
     }
 
-    //5. Verificar si existe el rut en la bd
-    public boolean existsRut(String rut) {
-        return usuarioRepository.existsByRut(rut);
-    }
+
 
     //6. Crear un nuevo usuario
     public UsuarioEntity createUsuario(UsuarioEntity usuario) {
@@ -59,10 +57,6 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    //10. Listar por rol
-    public List<UsuarioEntity> getUsuariosPorRol(String rol) {
-        return usuarioRepository.findByRol(rol);
-    }
 
     
 }

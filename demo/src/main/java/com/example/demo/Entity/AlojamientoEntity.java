@@ -18,4 +18,5 @@ public class AlojamientoEntity{
     private Integer precio_noche;
     private String politica_cancel;
     private String ciudad;
+    private String imagenUrl;
 }

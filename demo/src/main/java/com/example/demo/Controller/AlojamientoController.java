@@ -138,10 +138,6 @@ public class AlojamientoController {
         if(!usuario.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
         }
-        //Se verifica si el usuario es un anfitrión
-        if(!usuario.get().getRol().equals("ANFITRION")){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El usuario con id: " + alojamiento.getId_usuario() + " no es un anfitrión.");
-        }
         //Se guarda el alojamiento
         alojamientoService.saveAlojamiento(alojamiento);
         return ResponseEntity.status(HttpStatus.CREATED).body("Alojamiento creado exitosamente.");
