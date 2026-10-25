@@ -7,15 +7,17 @@ const axiosClient = axios.create({
   },
 });
 
-axiosClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+axiosClient.interceptors.request.use(async (config) => {
+  if (keycloak && keycloak.authenticated) {
+    try {
+      // Renueva el token si le quedan menos de 30 segundos de vida
+      await keycloak.updateToken(30);
+      config.headers.Authorization = `Bearer ${keycloak.token}`;
+    } catch (error) {
+      console.error('Error al renovar token para axios:', error);
     }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  }
+  return config;
+});
 
 export default axiosClient;

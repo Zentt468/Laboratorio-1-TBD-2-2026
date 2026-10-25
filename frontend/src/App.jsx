@@ -5,12 +5,15 @@ import AlojamientoCard from './components/AlojamientoCard';
 import ReservaModal from './components/ReservaModal';
 import MisViajesPage from './pages/MisViajesPage';
 import PublicarAlojamientoPage from './pages/PublicarAlojamientoPage';
+import { alojamientoService } from './services/alojamientoService';
 
 
 export default function App({ keycloak }) {
   // Estado para alternar entre pantallas ('home', 'viajes', 'publicar')
     const [vistaActual, setVistaActual] = useState('home');
-    const [alojamientos, setAlojamientos] = useState(ALOJAMIENTOS_MOCK);
+    const [alojamientos, setAlojamientos] = useState([]);
+    const [cargandoAlojamientos, setCargandoAlojamientos] = useState(true);
+    const [errorAlojamientos, setErrorAlojamientos] = useState(null);
     const [alojamientoSeleccionado, setAlojamientoSeleccionado] = useState(null);
     const [misReservas, setMisReservas] = useState([]);
     const [usuarioActual, setUsuarioActual] = useState(null);
@@ -29,6 +32,24 @@ export default function App({ keycloak }) {
         setUsuarioActual(null);
       }
     }, [keycloak]);
+
+    useEffect(() => {
+    const fetchAlojamientos = async () => {
+      try {
+        setCargandoAlojamientos(true);
+        const data = await alojamientoService.getAll();
+        setAlojamientos(data);
+        setErrorAlojamientos(null);
+      } catch (err) {
+        console.error('Error al cargar alojamientos desde la BD:', err);
+        setErrorAlojamientos('No se pudieron obtener las propiedades.');
+      } finally {
+        setCargandoAlojamientos(false);
+      }
+    };
+
+    fetchAlojamientos();
+  }, []);
 
     const handleLogin = () => {
       if (keycloak) {
@@ -90,16 +111,15 @@ export default function App({ keycloak }) {
         }
     };
 
-    const handlePublicarExitoso = (nuevoAlojamiento) => {
-      const alojamientoCreado = {
-        id: Date.now(), // ID temporal local
-        ...nuevoAlojamiento,
-      };
-
-      // se agrega el nuevo alojamiento al inicio de la lista
-      setAlojamientos([alojamientoCreado, ...alojamientos]);
-      alert('¡Propiedad publicada exitosamente!');
-      setVistaActual('home');
+    const handlePublicarExitoso = async (datosFormulario) => {
+        try {
+          const nuevoAlojamiento = await alojamientoService.save(datosFormulario);
+          setAlojamientos((prev) => [nuevoAlojamiento, ...prev]);
+          setVistaActual('home');
+        } catch (err) {
+          console.error('Error al publicar el alojamiento:', err);
+          alert('Error al guardar la propiedad en la base de datos.');
+        }
     };
 
     // Visual
@@ -120,8 +140,8 @@ export default function App({ keycloak }) {
 
             {/* SECCIÓN MODIFICADA: Ahora contiene la fila y las tarjetas mapeadas */}
             <div className="container py-4">
-              <h3 className="fw-bold mb-1">Early booking deals</h3>
-              <p className="text-muted small mb-4">Book early and save big on select stays</p>
+              <h3 className="fw-bold mb-1">Alojamientos</h3>
+              <p className="text-muted small mb-4">Descubre los mejores alojamientos para tu próxima aventura</p>
 
               {/* Fila responsiva de 4 columnas */}
               <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
@@ -170,102 +190,3 @@ export default function App({ keycloak }) {
     </div>
   );
 }
-
-const ALOJAMIENTOS_MOCK = [
-  {
-    id: 1,
-    titulo: 'Chalet in Lo Barnechea',
-    tipo_alojamiento: 'Chalet',
-    ciudad: 'Santiago',
-    direccion: 'Camino Farellones 1420',
-    capacidad: 8,
-    estadia_minima: 2,
-    precio_noche: 149000,
-    politica_cancel: 'Flexible',
-    url_imagen: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 2,
-    titulo: 'Apartment in Buenos Aires',
-    tipo_alojamiento: 'Departamento',
-    ciudad: 'Buenos Aires',
-    direccion: 'Av. Santa Fe 3200',
-    capacidad: 2,
-    estadia_minima: 1,
-    precio_noche: 45000,
-    politica_cancel: 'Moderada',
-    url_imagen: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 3,
-    titulo: 'Apartment in Vina Del Mar',
-    tipo_alojamiento: 'Departamento',
-    ciudad: 'Viña del Mar',
-    direccion: 'Av. San Martín 850',
-    capacidad: 3,
-    estadia_minima: 2,
-    precio_noche: 52000,
-    politica_cancel: 'Flexible',
-    url_imagen: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 4,
-    titulo: 'House in Casablanca',
-    tipo_alojamiento: 'Casa',
-    ciudad: 'Casablanca',
-    direccion: 'Ruta 68 Km 75',
-    capacidad: 6,
-    estadia_minima: 3,
-    precio_noche: 85000,
-    politica_cancel: 'Estricta',
-    url_imagen: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 5,
-    titulo: 'Cabaña rústica junto al lago',
-    tipo_alojamiento: 'Cabaña',
-    ciudad: 'Pucón',
-    direccion: 'Camino al Volcán 2100',
-    capacidad: 5,
-    estadia_minima: 2,
-    precio_noche: 75000,
-    politica_cancel: 'Flexible',
-    url_imagen: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 6,
-    titulo: 'Loft moderno en Lastarria',
-    tipo_alojamiento: 'Loft',
-    ciudad: 'Santiago',
-    direccion: 'José Victorino Lastarria 180',
-    capacidad: 2,
-    estadia_minima: 1,
-    precio_noche: 42000,
-    politica_cancel: 'Flexible',
-    url_imagen: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 7,
-    titulo: 'Refugio en la montaña con tinaja',
-    tipo_alojamiento: 'Cabaña',
-    ciudad: 'Cajón del Maipo',
-    direccion: 'Camino El Volcán 8450',
-    capacidad: 4,
-    estadia_minima: 2,
-    precio_noche: 95000,
-    politica_cancel: 'Moderada',
-    url_imagen: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: 8,
-    titulo: 'Estudio frente a Playa Mansa',
-    tipo_alojamiento: 'Departamento',
-    ciudad: 'Punta del Este',
-    direccion: 'Rambla Claudio Williman Parada 5',
-    capacidad: 2,
-    estadia_minima: 3,
-    precio_noche: 110000,
-    politica_cancel: 'Estricta',
-    url_imagen: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=80'
-  }
-];
