@@ -21,6 +21,7 @@ public class AlojamientoRowMapper implements RowMapper<AlojamientoEntity> {
                 .precio_noche(rs.getInt("precio_noche"))
                 .politica_cancel(rs.getString("politica_cancel"))
                 .ciudad(rs.getString("ciudad"))
+                .imagenUrl(rs.getString("imagen_url"))
                 .build();
     }
 }
