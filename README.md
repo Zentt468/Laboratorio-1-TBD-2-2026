@@ -37,6 +37,10 @@ Marketplace donde los **anfitriones** publican alojamientos, los **huéspedes** 
 
 Ver alojamientos, buscar disponibilidad y ver el resumen de reseñas no requiere iniciar sesión.
 
+### Archivos de la base de datos
+
+- Dentro de la carpeta resources : demo -> src -> main -> resources , se encuentran los archivos correspondientes a la base de datos.
+
 ---
 
 ## 2. Manual de instalación y despliegue
