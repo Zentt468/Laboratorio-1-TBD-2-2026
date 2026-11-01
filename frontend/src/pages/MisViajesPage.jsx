@@ -130,7 +130,7 @@ export default function MisViajesPage({
                                       </button>
                                   )}
 
-                                  {/* Reseñar: solo para estadías COMPLETADAS o FINALIZADAS */}
+                                  {/* Reseñar / Ver reseña: para estadías COMPLETADAS o FINALIZADAS */}
                                   {(estado === 'COMPLETADA' || estado === 'FINALIZADA') && (
                                       <button
                                           className="btn btn-warning btn-sm rounded-pill px-3 text-dark fw-semibold"

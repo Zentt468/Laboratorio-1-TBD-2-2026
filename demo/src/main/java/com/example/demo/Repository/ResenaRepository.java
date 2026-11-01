@@ -148,4 +148,11 @@ public class ResenaRepository {
         return total != null && total > 0;
     }
 
+    public Optional<ResenaEntity> findByIdReserva(Integer idReserva) {
+        String sql = "SELECT * FROM resena WHERE id_reserva = :idReserva";
+        return jdbcClient.sql(sql)
+                .param("idReserva", idReserva)
+                .query(ResenaEntity.class)
+                .optional();
+    }
 }

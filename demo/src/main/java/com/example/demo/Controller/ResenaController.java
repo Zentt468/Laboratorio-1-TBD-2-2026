@@ -163,4 +163,12 @@ public class ResenaController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("mensaje", e.getMessage()));
         }
     }
+
+    @GetMapping("/reserva/{idReserva}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> obtenerResenaDeReserva(@PathVariable Integer idReserva) {
+        return resenaService.obtenerPorIdReserva(idReserva)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
+    }
 }

@@ -101,4 +101,8 @@ public class ResenaService {
                 .historial(historial)
                 .build();
     }
+
+    public Optional<ResenaEntity> obtenerPorIdReserva(Integer idReserva) {
+        return resenaRepository.findByIdReserva(idReserva);
+    }
 }
