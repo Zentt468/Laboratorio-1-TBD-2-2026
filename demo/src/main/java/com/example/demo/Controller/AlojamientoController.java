@@ -144,6 +144,7 @@ public class AlojamientoController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Alojamiento creado exitosamente.");
     }
 
+    //Actualizar alojamiento
     @PutMapping
     @PreAuthorize("hasRole('ROLE_ANFITRION') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateAlojamiento(@RequestBody AlojamientoEntity alojamiento,
@@ -159,7 +160,7 @@ public class AlojamientoController {
         alojamientoService.updateAlojamiento(alojamiento, jwt.getClaimAsString("email"));
         return ResponseEntity.ok("Alojamiento actualizado exitosamente.");
     }
-
+    //Eliminar alojamiento por id
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ANFITRION') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteAlojamientoById(@PathVariable Integer id,

@@ -15,8 +15,8 @@ import java.util.Optional;
 public class AuditoriaService {
 
     private final AuditoriaRepository auditoriaRepository;
-
-    public List<AuditoriaDTO> getAllAuditorias() {
+    //Obtener todas las auditorias
+    public List<AuditoriaEntity> getAllAuditorias() {
         return auditoriaRepository.findAll();
     }
 

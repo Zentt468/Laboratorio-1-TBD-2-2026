@@ -105,7 +105,8 @@ public class TarifasController {
         return ResponseEntity.ok(tarifas);
     }
 
-       @PostMapping
+    //Crear una nueva tarifa
+    @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION')")
     public ResponseEntity<?> createTarifa(@RequestBody TarifasEntity tarifa, @AuthenticationPrincipal Jwt jwt) {
         if (!puedeGestionar(tarifa.getId_alojamiento(), jwt)) {
@@ -113,7 +114,7 @@ public class TarifasController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(tarifasService.createTarifa(tarifa));
     }
-
+    //Actualizar una tarifa existente
     @PutMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION')")
     public ResponseEntity<?> updateTarifa(@RequestBody TarifasEntity tarifa, @AuthenticationPrincipal Jwt jwt) {
@@ -127,7 +128,7 @@ public class TarifasController {
         tarifa.setId_alojamiento(existente.get().getId_alojamiento());
         return ResponseEntity.ok(tarifasService.updateTarifa(tarifa));
     }
-
+    //Eliminar una tarifa por id
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION')")
     public ResponseEntity<?> deleteTarifaById(@PathVariable Integer id, @AuthenticationPrincipal Jwt jwt) {

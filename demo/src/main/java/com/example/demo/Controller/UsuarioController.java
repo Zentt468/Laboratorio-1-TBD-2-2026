@@ -21,7 +21,7 @@ public class UsuarioController {
     
     private final UsuarioService usuarioService;
 
-    //0. Obtener (o vincular/crear) el usuario logueado
+    //0. Obtener el usuario logueado
     //Este no lleva @PreAuthorize
     @GetMapping("/me")
     public ResponseEntity<UsuarioEntity> me(@AuthenticationPrincipal Jwt jwt) {

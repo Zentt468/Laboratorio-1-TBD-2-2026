@@ -1,6 +1,5 @@
 package com.example.demo.Controller;
 
-import com.example.demo.DTO.AuditoriaDTO;
 import com.example.demo.Entity.AuditoriaEntity;
 import com.example.demo.Service.AuditoriaService;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +15,14 @@ import java.util.List;
 public class AuditoriaController {
 
     private final AuditoriaService auditoriaService;
-
+    //Obtiene todas las auditorias
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<AuditoriaDTO>> getAllAuditorias() {
-        List<AuditoriaDTO> auditorias = auditoriaService.getAllAuditorias();
+    public ResponseEntity<List<AuditoriaEntity>> getAllAuditorias() {
+        List<AuditoriaEntity> auditorias = auditoriaService.getAllAuditorias();
         return ResponseEntity.ok(auditorias);
     }
-
+    //Obtiene una auditoria por id
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AuditoriaEntity> getAuditoriaById(@PathVariable Integer id){
@@ -31,7 +30,7 @@ public class AuditoriaController {
                 map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
+    //Obtiene todas las auditorias por id de alojamiento
     @GetMapping("/alojamiento/{idAlojamiento}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<AuditoriaEntity>> getAuditoriasByAlojamientoId(@PathVariable Integer idAlojamiento) {

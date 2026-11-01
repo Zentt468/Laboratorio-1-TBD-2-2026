@@ -126,15 +126,28 @@ export default function App({ keycloak }) {
             return;
         }
         try {
-            await reservaService.cancelarReserva(idReserva);
+            const respuesta = await reservaService.cancelarReserva(idReserva);
 
-                setMisReservas((prev) =>
+            // Extraer monto devuelto según la clave devuelta por el backend/procedimiento
+            const montoDevuelto = respuesta?.monto_devolucion ?? respuesta?.montoDevolucion ?? respuesta?.monto_reembolso;
+
+            setMisReservas((prev) =>
                 prev.map((r) =>
-                    r.id_reserva === idReserva ? { ...r, estado_reserva: 'CANCELADA' } : r
+                    r.id_reserva === idReserva
+                        ? {
+                            ...r,
+                            estado_reserva: 'CANCELADA',
+                            monto_devolucion: montoDevuelto ?? r.monto_devolucion,
+                        }
+                        : r
                 )
             );
 
-            alert('La reserva fue cancelada exitosamente.');
+            const mensaje = montoDevuelto !== undefined
+                ? `Reserva cancelada exitosamente. Monto a devolver: $${Number(montoDevuelto).toLocaleString('es-CL')}`
+                : 'La reserva fue cancelada exitosamente.';
+
+            alert(mensaje);
         } catch (error) {
             console.error('Error al cancelar la reserva en el backend:', error);
             const mensaje =
@@ -157,6 +170,26 @@ export default function App({ keycloak }) {
           alert(mensaje);
         }
     };
+        const handleEditarAlojamiento = async (alojamiento) => {
+        const nuevoPrecio = window.prompt('Nuevo precio por noche:', alojamiento.precio_noche);
+        if (nuevoPrecio === null) return;
+
+        const nuevaPolitica = window.prompt('Nueva política (flexible, moderada o estricta):', alojamiento.politica_cancel);
+        if (nuevaPolitica === null) return;
+
+        try {
+            await alojamientoService.update({
+                ...alojamiento,
+                precio_noche: Number(nuevoPrecio),
+                politica_cancel: nuevaPolitica.trim().toLowerCase(),
+            });
+            const listaActualizada = await alojamientoService.getAll();
+            setAlojamientos(listaActualizada);
+            alert('Alojamiento actualizado.');
+        } catch (err) {
+            alert(err.response?.data?.error || err.response?.data || 'No se pudo actualizar el alojamiento.');
+        }
+    };  
 
     // Visual
   return (
@@ -189,6 +222,12 @@ export default function App({ keycloak }) {
                     <AlojamientoCard
                       alojamiento={item}
                       onReservarClick={handleAbrirModal}
+                      onEditarClick={handleEditarAlojamiento}
+                      puedeEditar={
+                        usuarioActual?.roles?.includes('ROLE_ADMIN') ||
+                        (usuarioActual?.roles?.includes('ROLE_ANFITRION') &&
+                          item.id_usuario === usuarioActual?.idUsuario)
+                      }
                     />
                   </div>
                 ))}

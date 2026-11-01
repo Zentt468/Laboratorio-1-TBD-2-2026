@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ReporteOcupacionRowMapper implements RowMapper<ReporteOcupacionDTO> {
+    //Toma los datos de la base de datos y los mapea a un objeto ReporteOcupacionDTO
     @Override
     public ReporteOcupacionDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
         return ReporteOcupacionDTO.builder()

@@ -111,57 +111,47 @@ export default function MisViajesPage({
                                 </div>
                               </div>
 
-                              <div className="mt-auto d-flex justify-content-between align-items-center pt-2 border-top">
-                                <div>
-                                  <span className="text-muted small d-block">Total pagado</span>
-                                  <span className="fw-bold fs-6 text-dark">
-                              ${Number(precioTotal).toLocaleString('es-CL')}
-                            </span>
-                                </div>
-
-                                <div className="d-flex gap-2">
-                                  {/* Cancelar: solo si está CONFIRMADA o PENDIENTE */}
-                                  {(estado === 'CONFIRMADA' || estado === 'PENDIENTE') && (
-                                      <button
-                                          className="btn btn-outline-danger btn-sm rounded-pill px-3"
-                                          onClick={() => onCancelarReserva(idReserva)}
-                                      >
-                                        Cancelar
-                                      </button>
-                                  )}
-
-                                  {/* Reseñar / Ver reseña: para estadías COMPLETADAS o FINALIZADAS */}
-                                  {(estado === 'COMPLETADA' || estado === 'FINALIZADA') && (
-                                      <button
-                                          className="btn btn-warning btn-sm rounded-pill px-3 text-dark fw-semibold"
-                                          onClick={() => setReservaParaResenar(reserva)}
-                                      >
-                                        ★ Dejar reseña
-                                      </button>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                );
-              })}
-            </div>
-        )}
-
-        {/* Renderizado condicional del modal de reseña */}
-        {reservaParaResenar && (
-            <ResenaModal
-                reserva={reservaParaResenar}
-                onClose={() => setReservaParaResenar(null)}
-                onResenaCreada={() => {
-                  setReservaParaResenar(null);
-                  if (onRecargarReservas) onRecargarReservas();
-                }}
-            />
-        )}
+                      {/* Bloque del footer de la tarjeta que muestra 'Monto devuelto' si está cancelada */}
+<div className="mt-auto pt-2 border-top">
+  {reserva.estado_reserva === 'CANCELADA' ? (
+    <div className="d-flex justify-content-between align-items-center">
+      <div>
+        <span className="text-danger small fw-semibold d-block">Monto devuelto</span>
+        <span className="fw-bold fs-6 text-danger">
+          ${Number(reserva.monto_devolucion ?? reserva.montoDevolucion ?? 0).toLocaleString('es-CL')}
+        </span>
       </div>
+      <span className="badge bg-danger rounded-pill px-3 py-2">
+        Cancelada
+      </span>
+    </div>
+  ) : (
+    <div className="d-flex justify-content-between align-items-center">
+      <div>
+        <span className="text-muted small d-block">Total pagado / por pagar</span>
+        <span className="fw-bold fs-6 text-dark">
+          ${Number(reserva.precio_total).toLocaleString('es-CL')}
+        </span>
+      </div>
+      {reserva.estado_reserva === 'CONFIRMADA' && (
+        <button
+          className="btn btn-outline-danger btn-sm rounded-pill px-3"
+          onClick={() => onCancelarReserva(reserva.id_reserva)}
+        >
+          Cancelar
+        </button>
+      )}
+    </div>
+  )}
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

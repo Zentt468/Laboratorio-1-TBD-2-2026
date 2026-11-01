@@ -114,6 +114,7 @@ public class ResenaController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Resena creada exitosamente.");
     }
     */
+    //Actualizar reseña
     @PutMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateResena(@RequestBody ResenaEntity resena){

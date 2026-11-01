@@ -179,95 +179,88 @@ EXECUTE FUNCTION fn_validar_reserva()^;
 -- Procedimiento Almacenado 2
 
 CREATE OR REPLACE PROCEDURE cancelarReserva(
-	p_id_reserva INT
+    p_id_reserva INT,
+    INOUT p_monto_reembolso INT DEFAULT 0
 )
 LANGUAGE plpgsql
 AS $$
 DECLARE
-	-- variables locales 
-	v_estado_actual VARCHAR;
-	v_politica_cancelacion VARCHAR;
-	v_fecha_inicio DATE;
-	v_total_pagado INT;
-	v_porcentaje_reembolso NUMERIC(5, 2);
-	v_monto_reembolso INT;
-	v_dias_anticipacion INTEGER;
-	v_id_alojamiento INT;
+v_estado_actual VARCHAR;
+    v_politica_cancelacion VARCHAR;
+    v_fecha_inicio DATE;
+    v_total_pagado INT;
+    v_porcentaje_reembolso NUMERIC(5, 2);
+    v_monto_reembolso INT;
+    v_dias_anticipacion INTEGER;
+    v_id_alojamiento INT;
 BEGIN
-	-- Se obtienen los datos de la reserva actual y el alojamiento 
-	SELECT
-		r.estado_reserva,
-		r.fecha_inicio,
-		r.precio_total,
-		r.id_alojamiento,
-		a.politica_cancel
-	INTO
-		v_estado_actual,
-		v_fecha_inicio,
-		v_total_pagado,
-		v_id_alojamiento,
-		v_politica_cancelacion
-	FROM reserva r
-	JOIN alojamiento a ON r.id_alojamiento = a.id_alojamiento
-	WHERE r.id_reserva = p_id_reserva;
+SELECT
+    r.estado_reserva,
+    r.fecha_inicio,
+    r.precio_total,
+    r.id_alojamiento,
+    a.politica_cancel
+INTO
+    v_estado_actual,
+    v_fecha_inicio,
+    v_total_pagado,
+    v_id_alojamiento,
+    v_politica_cancelacion
+FROM reserva r
+         JOIN alojamiento a ON r.id_alojamiento = a.id_alojamiento
+WHERE r.id_reserva = p_id_reserva;
 
-	-- Validaciones de los datos 
-	IF v_estado_actual IS NULL THEN
-		RAISE EXCEPTION 'La reserva con ID % no existe', p_id_reserva;
-	END IF;
-	IF v_estado_actual != 'CONFIRMADA' THEN
-		RAISE EXCEPTION 'Solo se puede cancelar reservas con estado CONFIRMADA';
-	END IF;
+IF v_estado_actual IS NULL THEN
+       RAISE EXCEPTION 'La reserva con ID % no existe', p_id_reserva;
+END IF;
+    IF v_estado_actual != 'CONFIRMADA' THEN
+       RAISE EXCEPTION 'Solo se puede cancelar reservas con estado CONFIRMADA';
+END IF;
 
-	-- Calcular los dias restantes 
-	v_dias_anticipacion := v_fecha_inicio - CURRENT_DATE;
+    v_dias_anticipacion := v_fecha_inicio - CURRENT_DATE;
 
-	-- Se calcula el reembolso 
-	IF v_politica_cancelacion = 'flexible' THEN
-		IF v_dias_anticipacion >= 1 THEN
-			v_porcentaje_reembolso := 1.00;
-		ELSE
-			v_porcentaje_reembolso := 0.00;
-		END IF;
-	ELSIF v_politica_cancelacion = 'moderada' THEN
-		IF v_dias_anticipacion >= 5 THEN
-			v_porcentaje_reembolso := 1.00;
-		ELSIF v_dias_anticipacion >= 2 THEN
-			v_porcentaje_reembolso := 0.50;
-		ELSE
-			v_porcentaje_reembolso := 0.00;
-		END IF;
-	ELSIF v_politica_cancelacion = 'estricta' THEN
-		IF v_dias_anticipacion >= 14 THEN
-			v_porcentaje_reembolso := 1.00;
-		ELSIF v_dias_anticipacion >= 7 THEN
-			v_porcentaje_reembolso := 0.50;
-		ELSE
-			v_porcentaje_reembolso := 0.00;
-		END IF;
-	ELSE
-		RAISE EXCEPTION 'Política de cancelación desconocida: %', v_politica_cancelacion;
-	END IF;
+    IF v_politica_cancelacion = 'flexible' THEN
+       IF v_dias_anticipacion >= 1 THEN
+          v_porcentaje_reembolso := 1.00;
+ELSE
+          v_porcentaje_reembolso := 0.00;
+END IF;
+    ELSIF v_politica_cancelacion = 'moderada' THEN
+       IF v_dias_anticipacion >= 5 THEN
+          v_porcentaje_reembolso := 1.00;
+       ELSIF v_dias_anticipacion >= 2 THEN
+          v_porcentaje_reembolso := 0.50;
+ELSE
+          v_porcentaje_reembolso := 0.00;
+END IF;
+    ELSIF v_politica_cancelacion = 'estricta' THEN
+       IF v_dias_anticipacion >= 14 THEN
+          v_porcentaje_reembolso := 1.00;
+       ELSIF v_dias_anticipacion >= 7 THEN
+          v_porcentaje_reembolso := 0.50;
+ELSE
+          v_porcentaje_reembolso := 0.00;
+END IF;
+ELSE
+       RAISE EXCEPTION 'Política de cancelación desconocida: %', v_politica_cancelacion;
+END IF;
 
-	-- Se calcula el reembolso a aplicar 
-	v_monto_reembolso := (v_total_pagado * v_porcentaje_reembolso)::INT;
+    v_monto_reembolso := (v_total_pagado * v_porcentaje_reembolso)::INT;
+    p_monto_reembolso := v_monto_reembolso;
 
-	UPDATE reserva
-	SET estado_reserva = 'CANCELADA'
-	WHERE id_reserva = p_id_reserva;
+UPDATE reserva
+SET estado_reserva = 'CANCELADA'
+WHERE id_reserva = p_id_reserva;
 
-	-- Registrar la devolución (monto negativo en pago) 
-	IF v_monto_reembolso > 0 THEN
-		INSERT INTO pago (id_reserva, monto_pago, fecha_pago, tipo_pago)
-		VALUES (p_id_reserva, -v_monto_reembolso, NOW(), 'REEMBOLSO');
-	END IF;
+IF v_monto_reembolso > 0 THEN
+       INSERT INTO pago (id_reserva, monto_pago, fecha_pago, tipo_pago)
+       VALUES (p_id_reserva, -v_monto_reembolso, NOW(), 'REEMBOLSO');
+END IF;
 
-	-- Liberar las fechas del calendario --
-	DELETE FROM calendario
-	WHERE id_reserva = p_id_reserva;
+DELETE FROM calendario
+WHERE id_reserva = p_id_reserva;
 END;
-$$^;
-
+$$;
 
 
 

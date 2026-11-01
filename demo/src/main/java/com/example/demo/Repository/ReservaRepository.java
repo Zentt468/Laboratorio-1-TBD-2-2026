@@ -19,7 +19,7 @@ public class ReservaRepository {
     public ReservaRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
-
+    //Obtener todas las reservas
     public List<ReservaEntity> findAll(){
         String sql = """
             SELECT * FROM reserva
@@ -30,7 +30,7 @@ public class ReservaRepository {
                 .query(reservaRowMapper)
                 .list();
     }
-
+    //Obtener reserva por id
     public Optional<ReservaEntity> findById(Integer idReserva) {
         String sql = """
             SELECT * FROM reserva
@@ -42,7 +42,7 @@ public class ReservaRepository {
                 .query(reservaRowMapper)
                 .optional();
     }
-
+    //Obtener reservas por id de usuario
     public List<ReservaEntity> findByUsuario(Integer idUsuario) {
         String sql = """
             SELECT * FROM reserva
@@ -55,7 +55,7 @@ public class ReservaRepository {
                 .query(reservaRowMapper)
                 .list();
     }
-
+    //Obtener reservas por id de alojamiento
     public List<ReservaEntity> findByAlojamiento(Integer idAlojamiento) {
         String sql = """
             SELECT * FROM reserva
@@ -68,7 +68,7 @@ public class ReservaRepository {
                 .query(reservaRowMapper)
                 .list();
     }
-
+    //Verificar si existe una reserva por id
     public boolean existsByReservaId(Integer idReserva) {
         String sql = """
             SELECT COUNT(*) FROM reserva
@@ -82,7 +82,7 @@ public class ReservaRepository {
 
         return count > 0;
     }
-
+        //Guardar reserva
         public void save(ReservaEntity reserva) {
         String sql = """
             INSERT INTO reserva (
@@ -103,7 +103,7 @@ public class ReservaRepository {
             .param("precioTotal", reserva.getPrecio_total())
             .update();
     }
-
+        //Actualizar reserva
         public void update(ReservaEntity reserva) {
         String sql = """
             UPDATE reserva
@@ -128,8 +128,8 @@ public class ReservaRepository {
             .param("idReserva", reserva.getId_reserva())
             .update();
     }
-
-    public List<ReservaDetalleDTO> findReservaDetalleByIdUsuario(Integer idUsuario){
+    //Obtener detalles de reserva por id de usuario
+    public List<ReservaDetalleDTO> findReservaDetalleByIdUsuario(Integer idUsuario) {
         String sql = """
             SELECT
                 r.id_reserva,
@@ -140,20 +140,25 @@ public class ReservaRepository {
                 r.fecha_fin,
                 r.estado_reserva,
                 r.precio_total,
+                ABS(COALESCE(p.monto_pago, 0)) AS monto_devolucion,
                 a.titulo,
                 a.ciudad,
                 a.imagen_url
             FROM reserva r
             INNER JOIN alojamiento a ON r.id_alojamiento = a.id_alojamiento
+            LEFT JOIN pago p 
+               ON r.id_reserva = p.id_reserva 
+              AND p.tipo_pago = 'REEMBOLSO'
             WHERE r.id_usuario = :id_usuario
+            ORDER BY r.fecha_inicio DESC
         """;
 
         return jdbcClient.sql(sql)
-                .param("id_usuario", idUsuario)
-                .query(ReservaDetalleDTO.class)
-                .list();
+            .param("id_usuario", idUsuario)
+            .query(ReservaDetalleDTO.class)
+            .list();
     }
-
+    //Eliminar reserva
     public void delete(Integer idReserva) {
         String sql = """
             DELETE FROM reserva
@@ -167,6 +172,7 @@ public class ReservaRepository {
 
     //Procedimientos almacenados
 
+    // Confirmar reserva
     public Integer confirmarReserva(Integer idUsuario, Integer idAlojamiento,
                                 LocalDate fechaInicio, LocalDate fechaFin,
                                 Integer nHuespedes, String tipoPago) {
@@ -189,9 +195,13 @@ public class ReservaRepository {
             .single();
     }
 
-    public void cancelarReserva(Integer idReserva) {
-    jdbcClient.sql("CALL cancelarReserva(:idReserva)")
+    // Cancelar reserva
+    public Integer cancelarReserva(Integer idReserva) {
+        String sql = "CALL cancelarReserva(:idReserva, NULL)";
+
+        return jdbcClient.sql(sql)
             .param("idReserva", idReserva)
-            .update();
+            .query(Integer.class)
+            .single();
     }
 }

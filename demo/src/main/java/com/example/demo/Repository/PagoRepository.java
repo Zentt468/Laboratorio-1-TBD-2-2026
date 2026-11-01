@@ -55,7 +55,7 @@ public class PagoRepository {
                 .list();
 
     }
-
+    //Guardar pago
     public void save(PagoEntity pago){
         String sql = """
                 INSERT INTO pago (id_reserva, monto_pago, fecha_pago, tipo_pago)
@@ -68,7 +68,7 @@ public class PagoRepository {
                         .param("tipoPago", pago.getTipo_pago())
                         .update();
     }
-
+    //Actualizar pago
     public int update(PagoEntity pago) {
         return jdbcClient.sql("""
                 UPDATE pago

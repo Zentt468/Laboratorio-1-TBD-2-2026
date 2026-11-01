@@ -1,7 +1,7 @@
 // src/components/AlojamientoCard.jsx
 import React from 'react';
 
-export default function AlojamientoCard({ alojamiento, onReservarClick }) {
+export default function AlojamientoCard({ alojamiento, onReservarClick, onEditarClick, puedeEditar }) {
   // Imagen de respaldo por si url_imagen viene vacía o nula
   const imagenFallback = 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80';
   const imagenFinal = alojamiento.imagenUrl?.trim() ? alojamiento.imagenUrl : imagenFallback;
@@ -62,13 +62,22 @@ export default function AlojamientoCard({ alojamiento, onReservarClick }) {
             </span>
             <span className="text-muted small"> / noche</span>
           </div>
-
-          <button
-            className="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold"
-            onClick={() => onReservarClick(alojamiento)}
-          >
-            Reservar
-          </button>
+                    <div className="d-flex">
+            {puedeEditar && (
+              <button
+                className="btn btn-outline-secondary btn-sm rounded-pill px-3 me-2"
+                onClick={() => onEditarClick(alojamiento)}
+              >
+                Editar
+              </button>
+            )}
+            <button
+              className="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold"
+              onClick={() => onReservarClick(alojamiento)}
+            >
+              Reservar
+            </button>
+          </div>
         </div>
       </div>
     </div>

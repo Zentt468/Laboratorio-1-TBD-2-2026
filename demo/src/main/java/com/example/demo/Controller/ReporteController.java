@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReporteController {
     private final ReporteService reporteService;
-
+    // Obtiene el reporte de ocupación
     @GetMapping("/ocupacion")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<ReporteOcupacionDTO>> getReporteOcupacion() {
