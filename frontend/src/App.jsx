@@ -125,15 +125,28 @@ export default function App({ keycloak }) {
             return;
         }
         try {
-            await reservaService.cancelarReserva(idReserva);
+            const respuesta = await reservaService.cancelarReserva(idReserva);
 
-                setMisReservas((prev) =>
+            // Extraer monto devuelto según la clave devuelta por el backend/procedimiento
+            const montoDevuelto = respuesta?.monto_devolucion ?? respuesta?.montoDevolucion ?? respuesta?.monto_reembolso;
+
+            setMisReservas((prev) =>
                 prev.map((r) =>
-                    r.id_reserva === idReserva ? { ...r, estado_reserva: 'CANCELADA' } : r
+                    r.id_reserva === idReserva
+                        ? {
+                            ...r,
+                            estado_reserva: 'CANCELADA',
+                            monto_devolucion: montoDevuelto ?? r.monto_devolucion,
+                        }
+                        : r
                 )
             );
 
-            alert('La reserva fue cancelada exitosamente.');
+            const mensaje = montoDevuelto !== undefined
+                ? `Reserva cancelada exitosamente. Monto a devolver: $${Number(montoDevuelto).toLocaleString('es-CL')}`
+                : 'La reserva fue cancelada exitosamente.';
+
+            alert(mensaje);
         } catch (error) {
             console.error('Error al cancelar la reserva en el backend:', error);
             const mensaje =

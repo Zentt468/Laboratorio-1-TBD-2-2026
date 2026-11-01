@@ -129,7 +129,7 @@ public class ReservaRepository {
             .update();
     }
 
-    public List<ReservaDetalleDTO> findReservaDetalleByIdUsuario(Integer idUsuario){
+    public List<ReservaDetalleDTO> findReservaDetalleByIdUsuario(Integer idUsuario) {
         String sql = """
             SELECT
                 r.id_reserva,
@@ -140,20 +140,24 @@ public class ReservaRepository {
                 r.fecha_fin,
                 r.estado_reserva,
                 r.precio_total,
+                ABS(COALESCE(p.monto_pago, 0)) AS monto_devolucion,
                 a.titulo,
                 a.ciudad,
                 a.imagen_url
             FROM reserva r
             INNER JOIN alojamiento a ON r.id_alojamiento = a.id_alojamiento
+            LEFT JOIN pago p 
+               ON r.id_reserva = p.id_reserva 
+              AND p.tipo_pago = 'REEMBOLSO'
             WHERE r.id_usuario = :id_usuario
+            ORDER BY r.fecha_inicio DESC
         """;
 
         return jdbcClient.sql(sql)
-                .param("id_usuario", idUsuario)
-                .query(ReservaDetalleDTO.class)
-                .list();
+            .param("id_usuario", idUsuario)
+            .query(ReservaDetalleDTO.class)
+            .list();
     }
-
     public void delete(Integer idReserva) {
         String sql = """
             DELETE FROM reserva
@@ -189,9 +193,12 @@ public class ReservaRepository {
             .single();
     }
 
-    public void cancelarReserva(Integer idReserva) {
-    jdbcClient.sql("CALL cancelarReserva(:idReserva)")
+    public Integer cancelarReserva(Integer idReserva) {
+        String sql = "CALL cancelarReserva(:idReserva, NULL)";
+
+        return jdbcClient.sql(sql)
             .param("idReserva", idReserva)
-            .update();
+            .query(Integer.class)
+            .single();
     }
 }

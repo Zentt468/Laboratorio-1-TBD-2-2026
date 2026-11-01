@@ -122,7 +122,7 @@ public class ReservaController {
 
     @PostMapping("/{id}/cancelar")
     @PreAuthorize("hasRole('ROLE_HUESPED')")
-    public ResponseEntity<?> cancelarReserva(@PathVariable Integer id,@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<?> cancelarReserva(@PathVariable Integer id, @AuthenticationPrincipal Jwt jwt) {
         Optional<ReservaEntity> reserva = reservaService.getReservaById(id);
         if (reserva.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva no encontrada");
@@ -131,7 +131,13 @@ public class ReservaController {
         if (!reserva.get().getId_usuario().equals(idUsuario)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Solo puedes cancelar tus propias reservas");
         }
-        reservaService.cancelarReserva(id);
-        return ResponseEntity.ok(Map.of("mensaje", "Reserva cancelada"));
+    
+        
+        Integer montoDevolucion = reservaService.cancelarReserva(id);
+    
+        return ResponseEntity.ok(Map.of(
+            "mensaje", "Reserva cancelada exitosamente",
+            "monto_devolucion", montoDevolucion
+        ));
     }
 }

@@ -64,7 +64,8 @@ public class ReservaService {
         r.getCantidadHuespedes(), r.getTipoPago());
     }
 
-    public void cancelarReserva(Integer idReserva) {
-    reservaRepository.cancelarReserva(idReserva);
+    // Se cambió el tipo de retorno de void a Integer
+    public Integer cancelarReserva(Integer idReserva) {
+        return reservaRepository.cancelarReserva(idReserva);
     }
 }

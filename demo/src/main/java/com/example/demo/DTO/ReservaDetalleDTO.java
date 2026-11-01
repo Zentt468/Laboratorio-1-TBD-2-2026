@@ -26,6 +26,7 @@ public class ReservaDetalleDTO {
     private LocalDate fecha_fin;
     private String estado_reserva;
     private Integer precio_total;
+    private Integer monto_devolucion; //para trabajar con el monto en front
 
     //Datos del alojamiento
     private String titulo;

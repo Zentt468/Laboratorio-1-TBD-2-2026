@@ -97,23 +97,39 @@ export default function MisViajesPage({ reservas, onCancelarReserva, onVolverHom
                         </div>
                       </div>
 
-                      <div className="mt-auto d-flex justify-content-between align-items-center pt-2 border-top">
-                        <div>
-                          <span className="text-muted small d-block">Total pagado / por pagar</span>
-                          <span className="fw-bold fs-6 text-dark">
-                            ${Number(reserva.precio_total).toLocaleString('es-CL')}
-                          </span>
-                        </div>
-
-                        {reserva.estado_reserva === 'CONFIRMADA' && (
-                          <button
-                            className="btn btn-outline-danger btn-sm rounded-pill px-3"
-                            onClick={() => onCancelarReserva(reserva.id_reserva)}
-                          >
-                            Cancelar
-                          </button>
-                        )}
-                      </div>
+                      {/* Bloque del footer de la tarjeta que muestra 'Monto devuelto' si está cancelada */}
+<div className="mt-auto pt-2 border-top">
+  {reserva.estado_reserva === 'CANCELADA' ? (
+    <div className="d-flex justify-content-between align-items-center">
+      <div>
+        <span className="text-danger small fw-semibold d-block">Monto devuelto</span>
+        <span className="fw-bold fs-6 text-danger">
+          ${Number(reserva.monto_devolucion ?? reserva.montoDevolucion ?? 0).toLocaleString('es-CL')}
+        </span>
+      </div>
+      <span className="badge bg-danger rounded-pill px-3 py-2">
+        Cancelada
+      </span>
+    </div>
+  ) : (
+    <div className="d-flex justify-content-between align-items-center">
+      <div>
+        <span className="text-muted small d-block">Total pagado / por pagar</span>
+        <span className="fw-bold fs-6 text-dark">
+          ${Number(reserva.precio_total).toLocaleString('es-CL')}
+        </span>
+      </div>
+      {reserva.estado_reserva === 'CONFIRMADA' && (
+        <button
+          className="btn btn-outline-danger btn-sm rounded-pill px-3"
+          onClick={() => onCancelarReserva(reserva.id_reserva)}
+        >
+          Cancelar
+        </button>
+      )}
+    </div>
+  )}
+</div>
                     </div>
                   </div>
                 </div>
