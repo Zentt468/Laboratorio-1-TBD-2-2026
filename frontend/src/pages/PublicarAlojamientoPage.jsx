@@ -8,10 +8,10 @@ export default function PublicarAlojamientoPage({ onPublicarExitoso, onCancelar 
     ciudad: '',
     direccion: '',
     capacidad: 2,
-    estadia_minima: 1,
+    estadia_min: 1,
     precio_noche: '',
     politica_cancel: 'Flexible',
-    url_imagen: '',
+    imagenUrl: '',
   });
 
   const [error, setError] = useState('');
@@ -38,22 +38,22 @@ export default function PublicarAlojamientoPage({ onPublicarExitoso, onCancelar 
       return;
     }
 
-    if (Number(formData.capacidad) <= 0 || Number(formData.estadia_minima) <= 0) {
+    if (Number(formData.capacidad) <= 0 || Number(formData.estadia_min) <= 0) {
       setError('La capacidad y la estadía mínima deben ser al menos 1.');
       return;
     }
 
     // Estructura exacta que espera la tabla 'alojamientos' en PostgreSQL
-    const nuevoAlojamiento = {
+  const nuevoAlojamiento = {
       titulo: formData.titulo.trim(),
       tipo_alojamiento: formData.tipo_alojamiento,
       ciudad: formData.ciudad.trim(),
       direccion: formData.direccion.trim(),
       capacidad: Number(formData.capacidad),
-      estadia_minima: Number(formData.estadia_minima),
+      estadia_min: Number(formData.estadia_min),
       precio_noche: Number(formData.precio_noche),
       politica_cancel: formData.politica_cancel,
-      url_imagen: formData.url_imagen.trim() || 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80',
+      imagenUrl: formData.imagenUrl.trim() || 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80',
     };
 
     onPublicarExitoso(nuevoAlojamiento);
@@ -158,11 +158,11 @@ export default function PublicarAlojamientoPage({ onPublicarExitoso, onCancelar 
               <label className="form-label fw-semibold small text-muted">Estadía mínima (noches)</label>
               <input
                 type="number"
-                name="estadia_minima"
+                name="estadia_min"
                 min="1"
                 max="30"
                 className="form-control"
-                value={formData.estadia_minima}
+                value={formData.estadia_min}
                 onChange={handleChange}
                 required
               />
@@ -193,9 +193,9 @@ export default function PublicarAlojamientoPage({ onPublicarExitoso, onCancelar 
                 value={formData.politica_cancel}
                 onChange={handleChange}
               >
-                <option value="Flexible">Flexible (reembolso completo hasta 24h antes)</option>
-                <option value="Moderada">Moderada (reembolso completo hasta 5 días antes)</option>
-                <option value="Estricta">Estricta (reembolso completo hasta 14 dias antes)</option>
+                <option value="flexible">Flexible (reembolso completo hasta 24h antes)</option>
+                <option value="moderada">Moderada (reembolso completo hasta 5 días antes)</option>
+                <option value="estricta">Estricta (reembolso completo hasta 14 dias antes)</option>
               </select>
             </div>
 
@@ -203,10 +203,10 @@ export default function PublicarAlojamientoPage({ onPublicarExitoso, onCancelar 
               <label className="form-label fw-semibold small text-muted">URL de la imagen</label>
               <input
                 type="url"
-                name="url_imagen"
+                name="imagenUrl"
                 className="form-control"
                 placeholder="https://images.unsplash.com/..."
-                value={formData.url_imagen}
+                value={formData.imagenUrl}
                 onChange={handleChange}
               />
               <span className="text-muted" style={{ fontSize: '0.75rem' }}>

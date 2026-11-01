@@ -4,7 +4,7 @@ import React from 'react';
 export default function AlojamientoCard({ alojamiento, onReservarClick }) {
   // Imagen de respaldo por si url_imagen viene vacía o nula
   const imagenFallback = 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80';
-  const imagenFinal = alojamiento.url_imagen?.trim() ? alojamiento.url_imagen : imagenFallback;
+  const imagenFinal = alojamiento.imagenUrl?.trim() ? alojamiento.imagenUrl : imagenFallback;
 
   return (
     <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column">
@@ -43,7 +43,7 @@ export default function AlojamientoCard({ alojamiento, onReservarClick }) {
         <div className="d-flex align-items-center gap-2 mb-2 text-secondary small">
           <span><i className="bi bi-people me-1"></i>Máx. {alojamiento.capacidad} pers.</span>
           <span>•</span>
-          <span>Mín. {alojamiento.estadia_minima} noche(s)</span>
+           <span>Mín. {alojamiento.estadia_min} noche(s)</span>
         </div>
 
         {/* Política de cancelación */}

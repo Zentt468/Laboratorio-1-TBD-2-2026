@@ -121,8 +121,8 @@ public class AlojamientoRepository{
     //Guardar alojamiento
     public void save(AlojamientoEntity alojamiento){
         String sql = """
-                INSERT INTO alojamiento (id_usuario, titulo, tipo_alojamiento, direccion, capacidad, estadia_min, precio_noche, politica_cancel, ciudad)
-                VALUES (:idUsuario, :titulo, :tipoAlojamiento, :direccion, :capacidad, :estadiaMin, :precioNoche, :politicaCancel, :ciudad)
+                INSERT INTO alojamiento (id_usuario, titulo, tipo_alojamiento, direccion, capacidad, estadia_min, precio_noche, politica_cancel, ciudad, imagen_url)
+                VALUES (:idUsuario, :titulo, :tipoAlojamiento, :direccion, :capacidad, :estadiaMin, :precioNoche, :politicaCancel, :ciudad, :imagenUrl)
                 """;
                 jdbcClient.sql(sql)
                         .param("idUsuario", alojamiento.getId_usuario())
@@ -134,6 +134,7 @@ public class AlojamientoRepository{
                         .param("precioNoche", alojamiento.getPrecio_noche())
                         .param("politicaCancel", alojamiento.getPolitica_cancel())
                         .param("ciudad", alojamiento.getCiudad())
+                        .param("imagenUrl", alojamiento.getImagenUrl())
                         .update();
     }
 
@@ -154,7 +155,8 @@ public class AlojamientoRepository{
                     estadia_min = :estadiaMin,
                     precio_noche = :precioNoche,
                     politica_cancel = :politicaCancel,
-                    ciudad = :ciudad
+                    ciudad = :ciudad,
+                    imagen_url = :imagenUrl
                 WHERE id_alojamiento = :idAlojamiento
                 """;
                 jdbcClient.sql(sql)
@@ -168,6 +170,7 @@ public class AlojamientoRepository{
                         .param("politicaCancel", alojamiento.getPolitica_cancel())
                         .param("ciudad", alojamiento.getCiudad())
                         .param("idAlojamiento", alojamiento.getId_alojamiento())
+                        .param("imagenUrl", alojamiento.getImagenUrl())
                         .update();
     }
 
