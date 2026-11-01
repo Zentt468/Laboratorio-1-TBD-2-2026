@@ -106,20 +106,9 @@ export default function App({ keycloak }) {
     };
 
     const handleConfirmarReserva = async (datosReserva) => {
-        try {
+                try {
             const data = await reservaService.confirmarReserva(datosReserva);
             const idGenerado = data?.idReserva;
-            const nuevaReserva = {
-                id: idGenerado,
-                ...datosReserva,
-                alojamiento_titulo: alojamientoSeleccionado.titulo,
-                alojamiento_ciudad: alojamientoSeleccionado.ciudad,
-                alojamiento_imagen: alojamientoSeleccionado.url_imagen,
-                estado: 'CONFIRMADA',
-                fecha_creacion: new Date().toLocaleDateString(),
-            };
-
-            setMisReservas([nuevaReserva, ...misReservas]);
             setAlojamientoSeleccionado(null);
             alert(`¡Reserva creada con éxito! ID de reserva: ${idGenerado || ''}`);
             setVistaActual('viajes');
@@ -138,9 +127,9 @@ export default function App({ keycloak }) {
         try {
             await reservaService.cancelarReserva(idReserva);
 
-            setMisReservas((prev) =>
+                setMisReservas((prev) =>
                 prev.map((r) =>
-                    r.id === idReserva ? { ...r, estado: 'CANCELADA' } : r
+                    r.id_reserva === idReserva ? { ...r, estado_reserva: 'CANCELADA' } : r
                 )
             );
 

@@ -93,7 +93,7 @@ public class ReservaController {
     }
 
     @GetMapping("usuario/{idUsuario}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_HUESPED')")
     public ResponseEntity<List<ReservaDetalleDTO>> getReservaDetalleByIdUsuario(@PathVariable Integer idUsuario){
         List<ReservaDetalleDTO> reservas = reservaService.getReservaDetalleByUsuarioId(idUsuario);
         return ResponseEntity.ok(reservas);

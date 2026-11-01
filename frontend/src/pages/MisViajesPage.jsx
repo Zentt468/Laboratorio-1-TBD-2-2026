@@ -56,7 +56,7 @@ export default function MisViajesPage({ reservas, onCancelarReserva, onVolverHom
       ) : (
         <div className="row g-4">
           {reservas.map((reserva) => (
-            <div key={reserva.id} className="col-12 col-md-6">
+            <div key={reserva.id_reserva} className="col-12 col-md-6">
               <div className="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
                 <div className="row g-0 h-100">
                   {/* Foto miniatura del alojamiento */}
@@ -76,7 +76,7 @@ export default function MisViajesPage({ reservas, onCancelarReserva, onVolverHom
                         <h6 className="card-title fw-bold text-truncate mb-0" style={{ maxWidth: '70%' }}>
                           {reserva.titulo}
                         </h6>
-                        <span className={`badge rounded-pill ${getBadgeClass(reserva.estado)}`}>
+                        <span className={`badge rounded-pill ${getBadgeClass(reserva.estado_reserva)}`}>
                           {reserva.estado_reserva}
                         </span>
                       </div>
@@ -105,7 +105,7 @@ export default function MisViajesPage({ reservas, onCancelarReserva, onVolverHom
                           </span>
                         </div>
 
-                        {reserva.estado !== 'CANCELADA' && (
+                        {reserva.estado_reserva === 'CONFIRMADA' && (
                           <button
                             className="btn btn-outline-danger btn-sm rounded-pill px-3"
                             onClick={() => onCancelarReserva(reserva.id_reserva)}
