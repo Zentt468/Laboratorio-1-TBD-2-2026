@@ -5,11 +5,14 @@ import AlojamientoCard from './components/AlojamientoCard';
 import ReservaModal from './components/ReservaModal';
 import MisViajesPage from './pages/MisViajesPage';
 import PublicarAlojamientoPage from './pages/PublicarAlojamientoPage';
+import AuditoriasPage from './pages/AuditoriasPage';
 import { alojamientoService } from './services/alojamientoService';
+import { reservaService } from './services/reservaService';
+import axiosClient from './api/axiosClient';
 
 
 export default function App({ keycloak }) {
-  // Estado para alternar entre pantallas ('home', 'viajes', 'publicar')
+  //Estado para alternar entre pantallas
     const [vistaActual, setVistaActual] = useState('home');
     const [alojamientos, setAlojamientos] = useState([]);
     const [cargandoAlojamientos, setCargandoAlojamientos] = useState(true);
@@ -34,22 +37,39 @@ export default function App({ keycloak }) {
     }, [keycloak]);
 
     useEffect(() => {
-    const fetchAlojamientos = async () => {
-      try {
-        setCargandoAlojamientos(true);
-        const data = await alojamientoService.getAll();
-        setAlojamientos(data);
-        setErrorAlojamientos(null);
-      } catch (err) {
-        console.error('Error al cargar alojamientos desde la BD:', err);
-        setErrorAlojamientos('No se pudieron obtener las propiedades.');
-      } finally {
-        setCargandoAlojamientos(false);
-      }
-    };
+        const fetchAlojamientos = async () => {
+          try {
+            setCargandoAlojamientos(true);
+            const data = await alojamientoService.getAll();
+            setAlojamientos(data);
+            setErrorAlojamientos(null);
+          } catch (err) {
+            console.error('Error al cargar alojamientos desde la BD:', err);
+            setErrorAlojamientos('No se pudieron obtener las propiedades.');
+          } finally {
+            setCargandoAlojamientos(false);
+          }
+        };
+        fetchAlojamientos();
+        }, []);
 
-    fetchAlojamientos();
-  }, []);
+    useEffect(() => {
+        const cargarReservas = async () => {
+            if (!usuarioActual) {
+                setMisReservas([]);
+                return;
+            }
+            try {
+                const response = await axiosClient.get(`/reservas/usuario/${1}`); // CAMBIAR CAMBIAR CAMBIAR
+                setMisReservas(response.data);
+            } catch (err) {
+                console.error('Error al cargar las reservas desde la BD:', err);
+            }
+        };
+        if (vistaActual === 'viajes') {
+            cargarReservas();
+        }
+    }, [vistaActual, usuarioActual]);
 
     const handleLogin = () => {
       if (keycloak) {
@@ -83,31 +103,53 @@ export default function App({ keycloak }) {
         setAlojamientoSeleccionado(alojamiento);
     };
 
-    const handleConfirmarReserva = (datosReserva) => {
-        const nuevaReserva = {
-        id: Date.now(), // Simula ID auto-generado
-        ...datosReserva,
-        alojamiento_titulo: alojamientoSeleccionado.titulo,
-        alojamiento_ciudad: alojamientoSeleccionado.ciudad,
-        alojamiento_imagen: alojamientoSeleccionado.url_imagen,
-        estado: 'CONFIRMADA',
-        fecha_creacion: new Date().toLocaleDateString(),
-        };
+    const handleConfirmarReserva = async (datosReserva) => {
+        try {
+            await reservaService.confirmarReserva(datosReserva)
+            const idGenerado = response.data?.idReserva;
+            const nuevaReserva = {
+                id: idGenerado,
+                ...datosReserva,
+                alojamiento_titulo: alojamientoSeleccionado.titulo,
+                alojamiento_ciudad: alojamientoSeleccionado.ciudad,
+                alojamiento_imagen: alojamientoSeleccionado.url_imagen,
+                estado: 'CONFIRMADA',
+                fecha_creacion: new Date().toLocaleDateString(),
+            };
 
-        setMisReservas([nuevaReserva, ...misReservas]);
-        setAlojamientoSeleccionado(null);
-        alert('¡Reserva creada con éxito! Redirigiendo a Mis Viajes...');
-        setVistaActual('viajes');
+            setMisReservas([nuevaReserva, ...misReservas]);
+            setAlojamientoSeleccionado(null);
+            alert(`¡Reserva creada con éxito! ID de reserva: ${idGenerado || ''}`);
+            setVistaActual('viajes');
+        } catch (err) {
+            console.error('Error al confirmar reserva en el backend:', err);
+            const mensaje = err.response?.data?.message || err.response?.data || 'Error al procesar la reserva en el servidor.';
+            alert(typeof mensaje === 'string' ? mensaje : JSON.stringify(mensaje));
+            throw err;
+        }
     };
 
-    const handleCancelarReserva = (idReserva) => {
-        if (window.confirm('¿Seguro que deseas cancelar esta reserva?')) {
-        // Actualiza el estado en memoria (luego será PUT al backend)
-            setMisReservas(
-                misReservas.map((r) =>
+    const handleCancelarReserva = async (idReserva) => {
+        if (!window.confirm('¿Seguro que deseas cancelar esta reserva?')) {
+            return;
+        }
+        try {
+            await reservaService.cancelarReserva(idReserva);
+
+            setMisReservas((prev) =>
+                prev.map((r) =>
                     r.id === idReserva ? { ...r, estado: 'CANCELADA' } : r
                 )
             );
+
+            alert('La reserva fue cancelada exitosamente.');
+        } catch (error) {
+            console.error('Error al cancelar la reserva en el backend:', error);
+            const mensaje =
+                error.response?.data?.message ||
+                error.response?.data ||
+                'No se pudo cancelar la reserva.';
+            alert(typeof mensaje === 'string' ? mensaje : JSON.stringify(mensaje));
         }
     };
 
@@ -175,12 +217,17 @@ export default function App({ keycloak }) {
             onCancelar={() => setVistaActual('home')}
           />
         )}
+          {vistaActual === 'auditorias' && (
+              <AuditoriasPage
+                  onVolverHome={() => setVistaActual('home')}
+              />
+          )}
       </main>
 
-      {/* Renderizado condicional del modal */}
       {alojamientoSeleccionado && (
         <ReservaModal
           alojamiento={alojamientoSeleccionado}
+          idUsuarioActual={1} //CAMBIAR CAMBIAR CAMBIAR CAMBIAR CAMBIAR CAMBIAR
           onClose={() => setAlojamientoSeleccionado(null)}
           onConfirmarReserva={handleConfirmarReserva}
         />

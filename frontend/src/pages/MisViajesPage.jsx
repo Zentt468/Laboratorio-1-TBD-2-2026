@@ -1,4 +1,3 @@
-// src/pages/MisViajesPage.jsx
 import React from 'react';
 
 export default function MisViajesPage({ reservas, onCancelarReserva, onVolverHome }) {
@@ -63,8 +62,8 @@ export default function MisViajesPage({ reservas, onCancelarReserva, onVolverHom
                   {/* Foto miniatura del alojamiento */}
                   <div className="col-4 position-relative">
                     <img
-                      src={reserva.alojamiento_imagen}
-                      alt={reserva.alojamiento_titulo}
+                      src={reserva.imagenUrl}
+                      alt={reserva.titulo}
                       className="w-100 h-100"
                       style={{ objectFit: 'cover', minHeight: '160px' }}
                     />
@@ -75,16 +74,16 @@ export default function MisViajesPage({ reservas, onCancelarReserva, onVolverHom
                     <div className="card-body d-flex flex-column h-100 p-3">
                       <div className="d-flex justify-content-between align-items-start mb-2">
                         <h6 className="card-title fw-bold text-truncate mb-0" style={{ maxWidth: '70%' }}>
-                          {reserva.alojamiento_titulo}
+                          {reserva.titulo}
                         </h6>
                         <span className={`badge rounded-pill ${getBadgeClass(reserva.estado)}`}>
-                          {reserva.estado}
+                          {reserva.estado_reserva}
                         </span>
                       </div>
 
                       <p className="text-muted small mb-2">
                         <i className="bi bi-geo-alt me-1"></i>
-                        {reserva.alojamiento_ciudad}
+                        {reserva.ciudad}
                       </p>
 
                       <div className="bg-light p-2 rounded-3 small mb-3">
@@ -94,7 +93,7 @@ export default function MisViajesPage({ reservas, onCancelarReserva, onVolverHom
                         </div>
                         <div className="text-secondary mt-1">
                           <i className="bi bi-people me-1"></i>
-                          {reserva.huespedes} huésped(es)
+                          {reserva.n_huespedes} huésped(es)
                         </div>
                       </div>
 
@@ -102,14 +101,14 @@ export default function MisViajesPage({ reservas, onCancelarReserva, onVolverHom
                         <div>
                           <span className="text-muted small d-block">Total pagado / por pagar</span>
                           <span className="fw-bold fs-6 text-dark">
-                            ${Number(reserva.total).toLocaleString('es-CL')}
+                            ${Number(reserva.precio_total).toLocaleString('es-CL')}
                           </span>
                         </div>
 
                         {reserva.estado !== 'CANCELADA' && (
                           <button
                             className="btn btn-outline-danger btn-sm rounded-pill px-3"
-                            onClick={() => onCancelarReserva(reserva.id)}
+                            onClick={() => onCancelarReserva(reserva.id_reserva)}
                           >
                             Cancelar
                           </button>

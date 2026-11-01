@@ -7,15 +7,13 @@ export const reservaService = {
     return response.data;
   },
 
-  // crear una nueva reserva (TRIGGER)
-  crearReserva: async (reservaData) => {
-    const response = await axiosClient.post('/reservas', reservaData);
+  confirmarReserva: async (datosReserva) => {
+    const response = await axiosClient.post('/reservas/confirmar', datosReserva);
     return response.data;
   },
 
-  // Cancelar reserva
-  cancelar: async (id) => {
-    const response = await axiosClient.put(`/reservas/${id}/cancelar`);
+  cancelarReserva: async (idReserva) => {
+    const response = await axiosClient.post(`/reservas/${idReserva}/cancelar`);
     return response.data;
   },
 };

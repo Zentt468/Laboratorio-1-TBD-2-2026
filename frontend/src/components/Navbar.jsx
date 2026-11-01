@@ -5,6 +5,7 @@ export default function Navbar({
   vistaActual, setVistaActual, usuarioActual, onLogin, onLogout
 }) {
   const tieneRol = (rol) => usuarioActual?.roles?.includes(rol);
+  const esAdmin = usuarioActual?.roles?.includes('ROLE_ADMIN')
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top py-2 px-3 px-md-5">
@@ -51,6 +52,15 @@ export default function Navbar({
             Mis viajes
           </button>
           )}
+
+            {esAdmin && (
+                <button
+                    className={`btn btn-link text-decoration-none ${vistaActual === 'auditorias' ? 'fw-bold text-primary' : 'text-dark'}`}
+                    onClick={() => setVistaActual('auditorias')}
+                >
+                    Auditorías
+                </button>
+            )}
 
           {usuarioActual ? (
             <div className="d-flex align-items-center gap-2 ms-2">
