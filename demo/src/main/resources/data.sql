@@ -40,7 +40,11 @@ INSERT INTO reserva (id_usuario, id_alojamiento, n_huespedes, fecha_inicio, fech
 (4, 2, 2, CURRENT_DATE + INTERVAL '3 days', CURRENT_DATE + INTERVAL '5 days', 'CONFIRMADA', 70000.00),    -- Reserva 2 (Moderada, 2 noches)
 (3, 3, 4, CURRENT_DATE + INTERVAL '15 days', CURRENT_DATE + INTERVAL '18 days', 'CONFIRMADA', 360000.00), -- Reserva 3 (Estricta >=14d, 3 noches)
 (4, 3, 2, CURRENT_DATE + INTERVAL '2 days', CURRENT_DATE + INTERVAL '5 days', 'CONFIRMADA', 360000.00),   -- Reserva 4 (Estricta <7d, 3 noches)
-(3, 1, 2, CURRENT_DATE - INTERVAL '20 days', CURRENT_DATE - INTERVAL '17 days', 'FINALIZADA', 150000.00)^; -- Reserva 5
+(3, 1, 2, CURRENT_DATE - INTERVAL '20 days', CURRENT_DATE - INTERVAL '17 days', 'FINALIZADA', 150000.00),
+(1, 1, 2, '2026-08-10', '2026-08-15', 'FINALIZADA', 210000),
+(2, 1, 2, '2026-09-01', '2026-09-05', 'FINALIZADA', 350000),
+(3, 1, 3, '2026-09-20', '2026-09-25', 'FINALIZADA', 140000),
+(1, 1, 3, '2026-10-10', '2026-10-14', 'FINALIZADA', 195000);^; -- Reserva 5
 
 
 -- 6. TABLA: pago
