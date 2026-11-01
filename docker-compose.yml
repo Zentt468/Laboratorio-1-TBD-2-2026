@@ -4,7 +4,7 @@ services:
   postgres-db:
     image: postgres:15-alpine
     container_name: alojamientos-postgres
-    restart: always
+    restart: "no"
     environment:
       POSTGRES_DB: alojamientos_db
       POSTGRES_USER: postgres
@@ -17,7 +17,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: alojamientos-keycloak
-    restart: always
+    restart: "no"
     command: start-dev --import-realm
     environment:
       KEYCLOAK_ADMIN: admin
@@ -32,7 +32,7 @@ services:
       context: ./demo
       dockerfile: Dockerfile
     container_name: alojamientos-backend
-    restart: always
+    restart: "no"
     ports:
       - "8081:8080"
     environment:
@@ -52,7 +52,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: alojamientos-frontend-app
-    restart: always
+    restart: "no"
     ports:
       - "5173:5173"
     volumes:
