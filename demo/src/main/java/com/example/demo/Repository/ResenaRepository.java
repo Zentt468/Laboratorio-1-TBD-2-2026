@@ -1,5 +1,6 @@
 package com.example.demo.Repository;
 
+import com.example.demo.DTO.DatosReservaDTO;
 import com.example.demo.Entity.ResenaEntity;
 import com.example.demo.Repository.RowMapper.ResenaRowMapper;
 
@@ -121,5 +122,30 @@ public class ResenaRepository {
                 .single();
     }
 
+    // Obtener los datos necesarios de la reserva para validar la regla de negocio
+    public Optional<DatosReservaDTO> findDatosReservaParaResenar(Integer idReserva) {
+        String sql = """
+            SELECT 
+                id_usuario, 
+                id_alojamiento, 
+                estado_reserva AS estado
+            FROM reserva
+            WHERE id_reserva = :idReserva
+        """;
+
+        return jdbcClient.sql(sql)
+                .param("idReserva", idReserva)
+                .query(DatosReservaDTO.class)
+                .optional();
+    }
+
+    public boolean existsByIdReserva(Integer idReserva) {
+        String sql = "SELECT COUNT(*) FROM resena WHERE id_reserva = :idReserva";
+        Integer total = jdbcClient.sql(sql)
+                .param("idReserva", idReserva)
+                .query(Integer.class)
+                .single();
+        return total != null && total > 0;
+    }
 
 }

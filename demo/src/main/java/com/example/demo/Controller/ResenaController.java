@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.DTO.CrearResenaRequest;
 import com.example.demo.Entity.ResenaEntity;
 import com.example.demo.Service.ResenaService;
 import com.example.demo.Entity.AlojamientoEntity;
@@ -18,6 +19,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import java.time.LocalDate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -39,7 +41,7 @@ public class ResenaController {
     }
     //Obtener reseña por id
     @GetMapping("/{id}")
-    @PreAuthorize ("hasRole('ROLE_ADMIN')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN') or hasRole('ROLE_HUESPED')")
     public ResponseEntity<?> getResenaById(@PathVariable Integer id){
         //Se verifica si la reseña existe
         Optional<ResenaEntity> resena = resenaService.getResenaById(id);
@@ -84,7 +86,7 @@ public class ResenaController {
         }
         return ResponseEntity.ok(resenas);
     }
-
+    /*
     //Guardar reseña
        @PostMapping
     @PreAuthorize("hasRole('ROLE_HUESPED')")
@@ -111,7 +113,7 @@ public class ResenaController {
         resenaService.saveResena(resena);
         return ResponseEntity.status(HttpStatus.CREATED).body("Resena creada exitosamente.");
     }
-
+    */
     @PutMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateResena(@RequestBody ResenaEntity resena){
@@ -141,4 +143,24 @@ public class ResenaController {
         return ResponseEntity.ok(resenaService.getResumenResenasByAlojamientoId(idAlojamiento));
     }
 
+    @PostMapping
+    @PreAuthorize("hasRole('ROLE_HUESPED')")
+    public ResponseEntity<?> crearResena(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody CrearResenaRequest request) {
+        try {
+            // Sincroniza/obtiene el id_usuario entero de PostgreSQL desde el token de Keycloak
+            Integer idUsuario = usuarioService.obtenerOCrear(jwt).getId_usuario();
+
+            resenaService.crearResena(idUsuario, request);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(Map.of("mensaje", "Reseña registrada con éxito"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("mensaje", e.getMessage()));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("mensaje", e.getMessage()));
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("mensaje", e.getMessage()));
+        }
+    }
 }

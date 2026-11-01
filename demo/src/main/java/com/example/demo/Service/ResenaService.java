@@ -1,5 +1,7 @@
 package com.example.demo.Service;
 
+import com.example.demo.DTO.CrearResenaRequest;
+import com.example.demo.DTO.DatosReservaDTO;
 import com.example.demo.Entity.ResenaEntity;
 import com.example.demo.Repository.ResenaRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demo.DTO.ResumenResenaDTO;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service 
@@ -37,8 +41,40 @@ public class ResenaService {
     }
 
     //Guardar reseña
-    public void saveResena(ResenaEntity resena) {
-        resenaRepository.save(resena);
+    public void crearResena(Integer idUsuario, CrearResenaRequest request) {
+        // 1. Obtener datos tipados y validar existencia
+        DatosReservaDTO reserva = resenaRepository.findDatosReservaParaResenar(request.getIdReserva())
+                .orElseThrow(() -> new IllegalArgumentException("La reserva no existe."));
+
+        // 2. Validar pertenencia con getter
+        if (!reserva.getId_usuario().equals(idUsuario)) {
+            throw new SecurityException("No puedes reseñar una reserva ajena.");
+        }
+
+        // 3. Validar estado completado
+        String estado = reserva.getEstado();
+        if (!"COMPLETADA".equalsIgnoreCase(estado) && !"FINALIZADA".equalsIgnoreCase(estado)) {
+            throw new IllegalStateException("Solo puedes dejar una reseña para estadías completadas.");
+        }
+
+        // 4. Validar duplicados
+        if (resenaRepository.existsByIdReserva(request.getIdReserva())) {
+            throw new IllegalStateException("Esta estadía ya cuenta con una reseña.");
+        }
+
+        // 5. Construir y guardar entidad
+        ResenaEntity nuevaResena = ResenaEntity.builder()
+                .id_alojamiento(reserva.getId_alojamiento())
+                .id_usuario(idUsuario)
+                .id_reserva(request.getIdReserva())
+                .titulo_resena(request.getTituloResena())
+                .comentario(request.getComentario())
+                .calificacion(request.getCalificacion())
+                .fecha_resena(LocalDate.now())
+                .estado("PUBLICADA")
+                .build();
+
+        resenaRepository.save(nuevaResena);
     }
 
     //Actualizar reseña
