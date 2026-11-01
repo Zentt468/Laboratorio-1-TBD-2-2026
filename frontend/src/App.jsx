@@ -146,8 +146,9 @@ export default function App({ keycloak }) {
 
     const handlePublicarExitoso = async (datosFormulario) => {
         try {
-          const nuevoAlojamiento = await alojamientoService.save(datosFormulario);
-          setAlojamientos((prev) => [nuevoAlojamiento, ...prev]);
+          await alojamientoService.save(datosFormulario);
+          const listaActualizada = await alojamientoService.getAll();
+          setAlojamientos(listaActualizada);
           setVistaActual('home');
          } catch (err) {
           console.error('Error al publicar el alojamiento:', err);
