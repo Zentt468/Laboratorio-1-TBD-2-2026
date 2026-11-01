@@ -25,14 +25,14 @@ public class ReservaController {
 
     private final ReservaService reservaService;
     private final UsuarioService usuarioService;
-
+    //Obtiene todas las reservas
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION')")
     public ResponseEntity<List<ReservaEntity>> getAllReservas() {
         List<ReservaEntity> reservas = reservaService.getAllReservas();
         return ResponseEntity.ok(reservas);
     }
-
+    //Obtiene una reserva por su ID
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION')")
     public ResponseEntity<ReservaEntity> getReservaById(@PathVariable Integer id) {
@@ -40,28 +40,21 @@ public class ReservaController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    /* POSIBLE A ELIMINAR
-    @GetMapping("/usuario/{idUsuario}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_HUESPED')")
-    public ResponseEntity<List<ReservaEntity>> getReservasByUsuarioId(@PathVariable Integer idUsuario) {
-        List<ReservaEntity> reservas = reservaService.getReservasByUsuarioId(idUsuario);
-        return ResponseEntity.ok(reservas);
-    }
-    */
+    //Obtiene todas las reservas de un alojamiento por su ID
     @GetMapping("/alojamiento/{idAlojamiento}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION')")
     public ResponseEntity<List<ReservaEntity>> getReservasByAlojamientoId(@PathVariable Integer idAlojamiento) {
         List<ReservaEntity> reservas = reservaService.getReservasByAlojamientoId(idAlojamiento);
         return ResponseEntity.ok(reservas);
     }
-
+    //Verifica si existe una reserva por su ID
     @GetMapping("/exists/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION')")
     public ResponseEntity<Boolean> existsReservaById(@PathVariable Integer id) {
         boolean exists = reservaService.existsReserva(id);
         return ResponseEntity.ok(exists);
     }
-
+    //Crea una nueva reserva
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> saveReserva(@RequestBody ReservaEntity reserva) {
@@ -73,7 +66,7 @@ public class ReservaController {
         reservaService.saveReserva(reserva);
         return ResponseEntity.ok().build();
     }
-
+    //Actualiza una reserva existente
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION')")
     public ResponseEntity<?> updateReserva(@PathVariable Integer id, @RequestBody ReservaEntity reserva) {
@@ -91,14 +84,14 @@ public class ReservaController {
         reservaService.updateReserva(reserva);
         return ResponseEntity.ok().build();
     }
-
+    //Obtiene todas las reservas de un usuario por su ID
     @GetMapping("usuario/{idUsuario}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_HUESPED')")
     public ResponseEntity<List<ReservaDetalleDTO>> getReservaDetalleByIdUsuario(@PathVariable Integer idUsuario){
         List<ReservaDetalleDTO> reservas = reservaService.getReservaDetalleByUsuarioId(idUsuario);
         return ResponseEntity.ok(reservas);
     }
-
+    //Elimina una reserva por su ID
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION')")
     public ResponseEntity<?> deleteReserva(@PathVariable Integer id) {
@@ -112,6 +105,7 @@ public class ReservaController {
 
     //Procedimientos almacenados
 
+    //Confirma una reserva y devuelve el ID de la reserva confirmada
     @PostMapping("/confirmar")
     @PreAuthorize("hasRole('ROLE_HUESPED')")
     public ResponseEntity<?> confirmarReserva(@RequestBody ConfirmarReservaRequest request, @AuthenticationPrincipal Jwt jwt) {
@@ -120,6 +114,7 @@ public class ReservaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("idReserva", idReserva));
     }
 
+    //Cancela una reserva y devuelve el monto de devolución
     @PostMapping("/{id}/cancelar")
     @PreAuthorize("hasRole('ROLE_HUESPED')")
     public ResponseEntity<?> cancelarReserva(@PathVariable Integer id, @AuthenticationPrincipal Jwt jwt) {

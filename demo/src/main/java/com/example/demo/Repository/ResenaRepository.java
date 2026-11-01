@@ -66,7 +66,7 @@ public class ResenaRepository {
                 .list();
 
     }
-
+    //Guardar reseña
     public void save(ResenaEntity resena){
         String sql = """
                 INSERT INTO resena (id_alojamiento, id_usuario, id_reserva, titulo_resena, comentario, calificacion, fecha_resena, estado)
@@ -83,7 +83,7 @@ public class ResenaRepository {
                         .param("estado", resena.getEstado())
                         .update();
     }
-
+    //Actualizar reseña
     public int update(ResenaEntity resena) {
         return jdbcClient.sql("""
                 UPDATE resena

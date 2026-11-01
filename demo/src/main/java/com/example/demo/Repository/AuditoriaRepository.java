@@ -18,7 +18,7 @@ public class AuditoriaRepository {
     public AuditoriaRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
-
+   // Obtener todos los registros de auditoria
    public List<AuditoriaEntity> findAll() {
         String sql = """
             SELECT * FROM auditoria

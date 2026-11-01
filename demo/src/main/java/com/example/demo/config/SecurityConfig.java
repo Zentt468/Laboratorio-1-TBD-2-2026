@@ -20,9 +20,9 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity   // activa los @PreAuthorize
+@EnableMethodSecurity   
 public class SecurityConfig {
-
+    // Configura la seguridad de la aplicación, incluyendo CORS, CSRF y autorización de solicitudes
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -42,7 +42,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Lee los roles de Keycloak (realm_access.roles) y los convierte en ROLE_ADMIN, ROLE_USER, etc.
+    // Lee los roles de Keycloak y los convierte en ROLE_ADMIN, ROLE_USER, etc.
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
@@ -60,7 +60,7 @@ public class SecurityConfig {
         });
         return converter;
     }
-
+    // Configura CORS para permitir solicitudes desde el frontend en http://localhost:5173
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

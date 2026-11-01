@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReporteService {
     private final ReporteRepository reporteRepository;
-
+    // Obtener el reporte de ocupación
     public List<ReporteOcupacionDTO> obtenerReporte() {
         return reporteRepository.getReporte();
     }

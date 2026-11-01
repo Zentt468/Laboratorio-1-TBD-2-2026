@@ -19,7 +19,7 @@ public class ReservaRepository {
     public ReservaRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
-
+    //Obtener todas las reservas
     public List<ReservaEntity> findAll(){
         String sql = """
             SELECT * FROM reserva
@@ -30,7 +30,7 @@ public class ReservaRepository {
                 .query(reservaRowMapper)
                 .list();
     }
-
+    //Obtener reserva por id
     public Optional<ReservaEntity> findById(Integer idReserva) {
         String sql = """
             SELECT * FROM reserva
@@ -42,7 +42,7 @@ public class ReservaRepository {
                 .query(reservaRowMapper)
                 .optional();
     }
-
+    //Obtener reservas por id de usuario
     public List<ReservaEntity> findByUsuario(Integer idUsuario) {
         String sql = """
             SELECT * FROM reserva
@@ -55,7 +55,7 @@ public class ReservaRepository {
                 .query(reservaRowMapper)
                 .list();
     }
-
+    //Obtener reservas por id de alojamiento
     public List<ReservaEntity> findByAlojamiento(Integer idAlojamiento) {
         String sql = """
             SELECT * FROM reserva
@@ -68,7 +68,7 @@ public class ReservaRepository {
                 .query(reservaRowMapper)
                 .list();
     }
-
+    //Verificar si existe una reserva por id
     public boolean existsByReservaId(Integer idReserva) {
         String sql = """
             SELECT COUNT(*) FROM reserva
@@ -82,7 +82,7 @@ public class ReservaRepository {
 
         return count > 0;
     }
-
+        //Guardar reserva
         public void save(ReservaEntity reserva) {
         String sql = """
             INSERT INTO reserva (
@@ -103,7 +103,7 @@ public class ReservaRepository {
             .param("precioTotal", reserva.getPrecio_total())
             .update();
     }
-
+        //Actualizar reserva
         public void update(ReservaEntity reserva) {
         String sql = """
             UPDATE reserva
@@ -128,7 +128,7 @@ public class ReservaRepository {
             .param("idReserva", reserva.getId_reserva())
             .update();
     }
-
+    //Obtener detalles de reserva por id de usuario
     public List<ReservaDetalleDTO> findReservaDetalleByIdUsuario(Integer idUsuario) {
         String sql = """
             SELECT
@@ -158,6 +158,7 @@ public class ReservaRepository {
             .query(ReservaDetalleDTO.class)
             .list();
     }
+    //Eliminar reserva
     public void delete(Integer idReserva) {
         String sql = """
             DELETE FROM reserva
@@ -171,6 +172,7 @@ public class ReservaRepository {
 
     //Procedimientos almacenados
 
+    // Confirmar reserva
     public Integer confirmarReserva(Integer idUsuario, Integer idAlojamiento,
                                 LocalDate fechaInicio, LocalDate fechaFin,
                                 Integer nHuespedes, String tipoPago) {
@@ -193,6 +195,7 @@ public class ReservaRepository {
             .single();
     }
 
+    // Cancelar reserva
     public Integer cancelarReserva(Integer idReserva) {
         String sql = "CALL cancelarReserva(:idReserva, NULL)";
 

@@ -136,7 +136,7 @@ public class UsuarioRepository {
                 .list();
     }
 
-    //10. Vincula un usuario existente con su id de Keycloak
+//10. Vincula un usuario existente con su id de Keycloak
 public void vincularKeycloakId(Integer idUsuario, String keycloakId) {
     String sql = """
         UPDATE usuario
