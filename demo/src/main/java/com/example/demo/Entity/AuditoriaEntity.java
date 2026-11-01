@@ -1,7 +1,7 @@
 package com.example.demo.Entity;
 
 import lombok.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 @Data
 @Builder 
 @NoArgsConstructor 
@@ -14,5 +14,5 @@ public class AuditoriaEntity{
     private String valor_anterior;
     private String valor_nuevo;
     private String usuario_cambio;
-    private LocalDate fecha_cambio;
+    private LocalDateTime fecha_cambio;
 }

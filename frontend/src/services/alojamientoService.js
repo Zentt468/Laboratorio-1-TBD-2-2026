@@ -18,4 +18,12 @@ export const alojamientoService = {
     const response = await axiosClient.post('/alojamientos', alojamientoData);
     return response.data;
   },
+
+   // actualizar un alojamiento (dispara el trigger de auditoría)
+  update: async (alojamientoData) => {
+    const response = await axiosClient.put('/alojamientos', alojamientoData);
+    return response.data;
+  },
+
+
 };

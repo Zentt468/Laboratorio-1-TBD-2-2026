@@ -1,6 +1,5 @@
 package com.example.demo.Controller;
 
-import com.example.demo.DTO.AuditoriaDTO;
 import com.example.demo.Entity.AuditoriaEntity;
 import com.example.demo.Service.AuditoriaService;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,8 @@ public class AuditoriaController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<AuditoriaDTO>> getAllAuditorias() {
-        List<AuditoriaDTO> auditorias = auditoriaService.getAllAuditorias();
+    public ResponseEntity<List<AuditoriaEntity>> getAllAuditorias() {
+        List<AuditoriaEntity> auditorias = auditoriaService.getAllAuditorias();
         return ResponseEntity.ok(auditorias);
     }
 

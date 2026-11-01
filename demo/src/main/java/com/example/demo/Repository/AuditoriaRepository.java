@@ -19,14 +19,14 @@ public class AuditoriaRepository {
         this.jdbcClient = jdbcClient;
     }
 
-    public List<AuditoriaDTO> findAll() {
+   public List<AuditoriaEntity> findAll() {
         String sql = """
             SELECT * FROM auditoria
             ORDER BY fecha_cambio DESC
         """;
 
         return jdbcClient.sql(sql)
-                .query(AuditoriaDTO.class)
+                .query(auditoriaRowMapper)
                 .list();
     }
 
@@ -35,7 +35,7 @@ public class AuditoriaRepository {
         String sql = """
             SELECT * FROM auditoria
             WHERE id_alojamiento = :idAlojamiento
-            ORDER BY fecha DESC
+            ORDER BY fecha_cambio DESC
         """;
 
         return jdbcClient.sql(sql)

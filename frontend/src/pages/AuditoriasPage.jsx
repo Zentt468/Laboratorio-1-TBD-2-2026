@@ -66,34 +66,32 @@ export default function AuditoriasPage({ onVolverHome }) {
                 </div>
             ) : (
                 <div className="table-responsive bg-white rounded-4 shadow-sm border p-3">
-                    <table className="table table-hover align-middle mb-0">
+                     <table className="table table-hover align-middle mb-0">
                         <thead className="table-light">
                         <tr>
                             <th>ID</th>
-                            <th>Operación</th>
-                            <th>Tabla</th>
+                            <th>Alojamiento</th>
+                            <th>Campo</th>
+                            <th>Valor anterior</th>
+                            <th>Valor nuevo</th>
                             <th>Usuario</th>
-                            <th>Fecha y Hora</th>
-                            <th>Detalle / Registro</th>
+                            <th>Fecha y hora</th>
                         </tr>
                         </thead>
                         <tbody>
                         {auditorias.map((item) => (
-                            <tr key={item.idAuditoria}>
-                                <td className="fw-semibold">#{item.idAuditoria}</td>
+                            <tr key={item.id_auditoria}>
+                                <td className="fw-semibold">#{item.id_auditoria}</td>
+                                <td>#{item.id_alojamiento}</td>
                                 <td>
-                    <span className={`badge rounded-pill ${getOperacionBadge(item.operacion)}`}>
-                      {item.operacion}
-                    </span>
+                                    <span className="badge rounded-pill bg-warning text-dark">
+                                        {item.campo_cambiado}
+                                    </span>
                                 </td>
-                                <td className="fw-bold text-secondary">{item.tabla}</td>
-                                <td>{item.usuario || 'Sistema/BD'}</td>
-                                <td className="small text-muted">{formatearFecha(item.fecha)}</td>
-                                <td>
-                                    <code className="small bg-light p-1 rounded text-dark">
-                                        {typeof item.detalle === 'object' ? JSON.stringify(item.detalle) : item.detalle || '-'}
-                                    </code>
-                                </td>
+                                <td className="text-danger">{item.valor_anterior}</td>
+                                <td className="text-success fw-semibold">{item.valor_nuevo}</td>
+                                <td>{item.usuario_cambio}</td>
+                                <td className="small text-muted">{formatearFecha(item.fecha_cambio)}</td>
                             </tr>
                         ))}
                         </tbody>

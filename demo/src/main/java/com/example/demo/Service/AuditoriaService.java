@@ -16,7 +16,7 @@ public class AuditoriaService {
 
     private final AuditoriaRepository auditoriaRepository;
 
-    public List<AuditoriaDTO> getAllAuditorias() {
+    public List<AuditoriaEntity> getAllAuditorias() {
         return auditoriaRepository.findAll();
     }
 
