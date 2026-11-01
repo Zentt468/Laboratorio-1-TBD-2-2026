@@ -22,6 +22,6 @@ public class ReporteRepository {
     }
 
     public void refrescarVista() {
-        jdbcClient.sql("SELECT refrescar_mv_ocupacion_ingresos()").update();
+       jdbcClient.sql("REFRESH MATERIALIZED VIEW mv_ocupacion_ingresos").update();
     }
 }

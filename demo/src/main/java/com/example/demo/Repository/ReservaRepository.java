@@ -1,5 +1,6 @@
 package com.example.demo.Repository;
 
+import com.example.demo.DTO.ReservaDetalleDTO;
 import com.example.demo.Entity.ReservaEntity;
 import com.example.demo.Repository.RowMapper.ReservaRowMapper;
 
@@ -82,15 +83,14 @@ public class ReservaRepository {
         return count > 0;
     }
 
-    public void save(ReservaEntity reserva) {
+        public void save(ReservaEntity reserva) {
         String sql = """
-            INSERT INTO reservas (
+            INSERT INTO reserva (
                 id_usuario, id_alojamiento, n_huespedes,
                 fecha_inicio, fecha_fin, estado_reserva, precio_total)
-            Values(
+            VALUES (
                 :idUsuario, :idAlojamiento, :nHuespedes,
                 :fechaInicio, :fechaFin, :estadoReserva, :precioTotal)
-                RETURNING id_reserva
         """;
 
         jdbcClient.sql(sql)
@@ -102,6 +102,56 @@ public class ReservaRepository {
             .param("estadoReserva", reserva.getEstado_reserva())
             .param("precioTotal", reserva.getPrecio_total())
             .update();
+    }
+
+        public void update(ReservaEntity reserva) {
+        String sql = """
+            UPDATE reserva
+            SET id_usuario = :idUsuario,
+                id_alojamiento = :idAlojamiento,
+                n_huespedes = :nHuespedes,
+                fecha_inicio = :fechaInicio,
+                fecha_fin = :fechaFin,
+                estado_reserva = :estadoReserva,
+                precio_total = :precioTotal
+            WHERE id_reserva = :idReserva
+        """;
+
+        jdbcClient.sql(sql)
+            .param("idUsuario", reserva.getId_usuario())
+            .param("idAlojamiento", reserva.getId_alojamiento())
+            .param("nHuespedes", reserva.getN_huespedes())
+            .param("fechaInicio", reserva.getFecha_inicio())
+            .param("fechaFin", reserva.getFecha_fin())
+            .param("estadoReserva", reserva.getEstado_reserva())
+            .param("precioTotal", reserva.getPrecio_total())
+            .param("idReserva", reserva.getId_reserva())
+            .update();
+    }
+
+    public List<ReservaDetalleDTO> findReservaDetalleByIdUsuario(Integer idUsuario){
+        String sql = """
+            SELECT
+                r.id_reserva,
+                r.id_usuario,
+                r.id_alojamiento,
+                r.n_huespedes,
+                r.fecha_inicio,
+                r.fecha_fin,
+                r.estado_reserva,
+                r.precio_total,
+                a.titulo,
+                a.ciudad,
+                a.imagen_url
+            FROM reserva r
+            INNER JOIN alojamiento a ON r.id_alojamiento = a.id_alojamiento
+            WHERE r.id_usuario = :id_usuario
+        """;
+
+        return jdbcClient.sql(sql)
+                .param("id_usuario", idUsuario)
+                .query(ReservaDetalleDTO.class)
+                .list();
     }
 
     public void delete(Integer idReserva) {

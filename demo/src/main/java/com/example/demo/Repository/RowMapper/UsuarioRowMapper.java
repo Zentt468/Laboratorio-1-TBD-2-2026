@@ -12,7 +12,7 @@ public class UsuarioRowMapper implements RowMapper<UsuarioEntity> {
     public UsuarioEntity mapRow(ResultSet rs, int rowNum) throws SQLException{
         return UsuarioEntity.builder()
                 .id_usuario(rs.getInt("id_usuario"))
-                .keycloak_id(rs.getInt("keycloak_id"))
+                .keycloak_id(rs.getString("keycloak_id"))
                 .nombre(rs.getString("nombre"))
                 .correo(rs.getString("correo"))
                 .build();

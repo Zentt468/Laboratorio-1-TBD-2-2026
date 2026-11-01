@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.DTO.AuditoriaDTO;
 import com.example.demo.Entity.AuditoriaEntity;
 import com.example.demo.Service.AuditoriaService;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,14 @@ public class AuditoriaController {
     private final AuditoriaService auditoriaService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<AuditoriaEntity>> getAllAuditorias() {
-        List<AuditoriaEntity> auditorias = auditoriaService.getAllAuditorias();
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<AuditoriaDTO>> getAllAuditorias() {
+        List<AuditoriaDTO> auditorias = auditoriaService.getAllAuditorias();
         return ResponseEntity.ok(auditorias);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AuditoriaEntity> getAuditoriaById(@PathVariable Integer id){
         return auditoriaService.getAuditoriaById(id).
                 map(ResponseEntity::ok)
@@ -32,7 +33,7 @@ public class AuditoriaController {
     }
 
     @GetMapping("/alojamiento/{idAlojamiento}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<AuditoriaEntity>> getAuditoriasByAlojamientoId(@PathVariable Integer idAlojamiento) {
         List<AuditoriaEntity> auditorias = auditoriaService.getAuditoriaByAlojamientoId(idAlojamiento);
         return ResponseEntity.ok(auditorias);

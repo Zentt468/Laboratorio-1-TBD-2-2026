@@ -20,7 +20,7 @@ public class PagoController {
 
     //Obtener todos los pagos
     @GetMapping 
-    @PreAuthorize ("hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION') or hasRole('ROLE_HUESPED')")
     public ResponseEntity<List<PagoEntity>> getAllPagos() {
         List<PagoEntity> pagos = pagoService.getAllPagos();
         return new ResponseEntity<>(pagos, HttpStatus.OK);
@@ -28,7 +28,7 @@ public class PagoController {
 
     //Obtener pago por id
     @GetMapping("/{id}")
-    @PreAuthorize ("hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION') or hasRole('ROLE_HUESPED')")
     public ResponseEntity<?> getPagoById(@PathVariable Integer id){
         //Se verifica si el pago existe
         Optional<PagoEntity> pago = pagoService.getPagoById(id);
@@ -41,7 +41,7 @@ public class PagoController {
     }
     //Obtener pagos por id de reserva
     @GetMapping("/reserva/{idReserva}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION')")
     public ResponseEntity<List<PagoEntity>> getPagosByReservaId(@PathVariable Integer idReserva) {
         List<PagoEntity> pagos = pagoService.getPagosByReservaId(idReserva);
         return ResponseEntity.ok(pagos);
@@ -49,7 +49,7 @@ public class PagoController {
 
     //Guardar pago
     @PostMapping
-    @PreAuthorize ("hasRole('ADMIN')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION') or hasRole('ROLE_HUESPED')")
     public ResponseEntity<?> savePago(@RequestBody PagoEntity pago){
         pagoService.savePago(pago);
         return ResponseEntity.status(HttpStatus.CREATED).body("Pago creado exitosamente.");
@@ -57,7 +57,7 @@ public class PagoController {
 
     //Actualizar pago
     @PutMapping
-    @PreAuthorize ("hasRole('ADMIN')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updatePago(@RequestBody PagoEntity pago){
         pagoService.updatePago(pago);
         return ResponseEntity.ok("Pago actualizado exitosamente.");
@@ -65,7 +65,7 @@ public class PagoController {
 
     //Eliminar pago por id
     @DeleteMapping("/{id}")
-    @PreAuthorize ("hasRole('ADMIN')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deletePagoById(@PathVariable Integer id){
         pagoService.deletePagoById(id);
         return ResponseEntity.ok("Pago eliminado exitosamente.");

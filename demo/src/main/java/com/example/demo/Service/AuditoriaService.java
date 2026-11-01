@@ -1,5 +1,6 @@
 package com.example.demo.Service;
 
+import com.example.demo.DTO.AuditoriaDTO;
 import com.example.demo.Entity.AuditoriaEntity;
 import com.example.demo.Repository.AuditoriaRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class AuditoriaService {
 
     private final AuditoriaRepository auditoriaRepository;
 
-    public List<AuditoriaEntity> getAllAuditorias() {
+    public List<AuditoriaDTO> getAllAuditorias() {
         return auditoriaRepository.findAll();
     }
 

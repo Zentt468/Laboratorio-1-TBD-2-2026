@@ -17,7 +17,7 @@ public class ReporteController {
     private final ReporteService reporteService;
 
     @GetMapping("/ocupacion")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<ReporteOcupacionDTO>> getReporteOcupacion() {
         return ResponseEntity.ok(reporteService.obtenerReporte());
     }

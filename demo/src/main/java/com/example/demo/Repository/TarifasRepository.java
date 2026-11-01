@@ -133,7 +133,7 @@ public class TarifasRepository {
     public void deleteById(int id_tarifa){
 
         String sql = """
-            DELETE FROM tarifas
+            DELETE FROM tarifa
             WHERE id_tarifa = :id_tarifa
         """;
 
@@ -146,7 +146,7 @@ public class TarifasRepository {
     public List<TarifasEntity> findByAlojamiento(Integer id_alojamiento){
         String sql = """
             SELECT id_tarifa, id_alojamiento, temporada, fecha_inicio, fecha_fin, precio
-            FROM tarifas
+            FROM tarifa
             WHERE id_alojamiento = :id_alojamiento
         """;
         return jdbcClient.sql(sql)

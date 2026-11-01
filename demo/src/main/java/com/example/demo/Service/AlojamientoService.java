@@ -5,6 +5,7 @@ import com.example.demo.Repository.AlojamientoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,8 +63,9 @@ public class AlojamientoService {
     }
 
     //Actualizar alojamiento
-    public void updateAlojamiento(AlojamientoEntity alojamiento) {
-        alojamientoRepository.update(alojamiento);
+   @Transactional
+    public void updateAlojamiento(AlojamientoEntity alojamiento, String usuario) {
+        alojamientoRepository.update(alojamiento, usuario);
     }
 
     //Eliminar alojamiento por id

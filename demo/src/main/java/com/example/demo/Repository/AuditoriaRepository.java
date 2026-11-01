@@ -1,5 +1,6 @@
 package com.example.demo.Repository;
 
+import com.example.demo.DTO.AuditoriaDTO;
 import com.example.demo.Entity.AuditoriaEntity;
 import com.example.demo.Repository.RowMapper.AuditoriaRowMapper;
 
@@ -18,14 +19,14 @@ public class AuditoriaRepository {
         this.jdbcClient = jdbcClient;
     }
 
-    public List<AuditoriaEntity> findAll() {
+    public List<AuditoriaDTO> findAll() {
         String sql = """
             SELECT * FROM auditoria
-            ORDER BY fecha DESC
+            ORDER BY fecha_cambio DESC
         """;
 
         return jdbcClient.sql(sql)
-                .query(auditoriaRowMapper)
+                .query(AuditoriaDTO.class)
                 .list();
     }
 

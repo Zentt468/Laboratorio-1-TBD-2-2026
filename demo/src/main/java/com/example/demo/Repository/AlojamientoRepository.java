@@ -138,7 +138,12 @@ public class AlojamientoRepository{
     }
 
     //Actualizar alojamiento
-    public void update(AlojamientoEntity alojamiento){
+    public void update(AlojamientoEntity alojamiento, String usuario){
+         jdbcClient.sql("SELECT set_config('app.usuario', :usuario, true)")
+                .param("usuario", usuario)
+                .query(String.class)
+                .single();
+
         String sql = """
                 UPDATE alojamiento
                 SET id_usuario = :idUsuario,
@@ -187,7 +192,7 @@ public class AlojamientoRepository{
               AND a.capacidad >= :huespedes
               AND a.id_alojamiento NOT IN (
                   SELECT r.id_alojamiento FROM reserva r
-                  WHERE r.estado_reserva IN ('CONFIRMADA', 'COMPLETADA')
+                  WHERE r.estado_reserva IN ('CONFIRMADA', 'FINALIZADA')
                   AND daterange(r.fecha_inicio, r.fecha_fin) && daterange(CAST(:fechaInicio AS date), CAST(:fechaFin AS date))
               )
         """;

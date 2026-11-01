@@ -1,5 +1,6 @@
 package com.example.demo.Service;
 
+import com.example.demo.DTO.ReservaDetalleDTO;
 import com.example.demo.DTO.ConfirmarReservaRequest;
 import com.example.demo.Entity.ReservaEntity;
 import com.example.demo.Repository.ReservaRepository;
@@ -43,7 +44,11 @@ public class ReservaService {
     }
 
     public void updateReserva(ReservaEntity reserva) {
-        reservaRepository.save(reserva);
+        reservaRepository.update(reserva);
+    }
+
+    public List<ReservaDetalleDTO> getReservaDetalleByUsuarioId(Integer idUsuario){
+        return reservaRepository.findReservaDetalleByIdUsuario(idUsuario);
     }
 
     public void deleteReservaById(Integer idReserva) {
@@ -56,7 +61,7 @@ public class ReservaService {
     return reservaRepository.confirmarReserva(
         r.getIdUsuario(), r.getIdAlojamiento(),
         r.getFechaInicio(), r.getFechaFin(),
-        r.getNHuespedes(), r.getTipoPago());
+        r.getCantidadHuespedes(), r.getTipoPago());
     }
 
     public void cancelarReserva(Integer idReserva) {

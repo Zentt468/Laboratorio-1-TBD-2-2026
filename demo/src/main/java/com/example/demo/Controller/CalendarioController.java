@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class CalendarioController {
 
     private final CalendarioService calendarioService;
-    @PreAuthorize ("hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION') or hasRole('ROLE_HUESPED')")
     //Obtener todos los calendarios
     @GetMapping
     public ResponseEntity<List<CalendarioEntity>> getAllCalendarios() {
@@ -30,7 +30,7 @@ public class CalendarioController {
 
     //Obtener calendario por id
     @GetMapping("/{id}")
-    @PreAuthorize ("hasRole('ADMIN')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getCalendarioById(@PathVariable Integer id) {
         Optional<CalendarioEntity> calendario = calendarioService.findById(id);
         if (calendario.isPresent()) {
@@ -42,7 +42,7 @@ public class CalendarioController {
 
     //Obtener calendario por id de reserva
     @GetMapping("/reserva/{idReserva}")
-    @PreAuthorize ("hasRole('ADMIN')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<CalendarioEntity>> getCalendariosByReservaId(@PathVariable Integer idReserva) {
         List<CalendarioEntity> calendarios = calendarioService.findByReservaId(idReserva);
         return new ResponseEntity<>(calendarios, HttpStatus.OK);
@@ -50,7 +50,7 @@ public class CalendarioController {
 
     //Obtener calendario por fecha
     @GetMapping("/fecha/{fecha}")
-    @PreAuthorize ("hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION') or hasRole('ROLE_HUESPED')")
     public ResponseEntity<?> getCalendarioByFecha(@PathVariable String fecha) {
         Optional<CalendarioEntity> calendario = calendarioService.findByFecha(LocalDate.parse(fecha));
         if (calendario.isPresent()) {
@@ -62,7 +62,7 @@ public class CalendarioController {
 
     //Guardar calendario
     @PostMapping
-    @PreAuthorize ("hasRole('ADMIN') or hasRole('USER')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION') or hasRole('ROLE_HUESPED')")
     public ResponseEntity<String> saveCalendario(@RequestBody CalendarioEntity calendario) {
         calendarioService.saveCalendario(calendario);
         return ResponseEntity.status(HttpStatus.CREATED).body("Fecha guardada exitosamente");
@@ -70,7 +70,7 @@ public class CalendarioController {
 
     //Eliminar calendario por id
     @DeleteMapping("/{id}")
-    @PreAuthorize ("hasRole('ADMIN')")
+    @PreAuthorize ("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteCalendarioById(@PathVariable Integer id) {
         calendarioService.deleteCalendarioById(id);
         return ResponseEntity.status(HttpStatus.OK).body("Fecha eliminada exitosamente");

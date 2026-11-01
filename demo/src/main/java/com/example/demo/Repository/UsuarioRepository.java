@@ -33,7 +33,7 @@ public class UsuarioRepository {
     }
 
     //2. Buscar usuario por id de keycloak
-    public Optional<UsuarioEntity> findByKeycloakId(Integer keycloakId) {
+    public Optional<UsuarioEntity> findByKeycloakId(String keycloakId) {
         String sql  = """
             SELECT id_usuario,keycloak_id, nombre, correo
             FROM usuario
@@ -79,7 +79,7 @@ public class UsuarioRepository {
     //6. Crear un nuevo usuario
     public UsuarioEntity save(UsuarioEntity usuario) {
         String sql = """
-            INSERT INTO usuarios(keycloak_id, nombre, correo)
+            INSERT INTO usuario(keycloak_id, nombre, correo)
             Values(?, ?, ?)
             RETURNING id_usuario
         """;
@@ -135,5 +135,18 @@ public class UsuarioRepository {
                 .query(usuarioRowMapper)
                 .list();
     }
+
+    //10. Vincula un usuario existente con su id de Keycloak
+public void vincularKeycloakId(Integer idUsuario, String keycloakId) {
+    String sql = """
+        UPDATE usuario
+        SET keycloak_id = ?
+        WHERE id_usuario = ?
+        """;
+    jdbcClient.sql(sql)
+            .param(keycloakId)
+            .param(idUsuario)
+            .update();
+}
 
 }
