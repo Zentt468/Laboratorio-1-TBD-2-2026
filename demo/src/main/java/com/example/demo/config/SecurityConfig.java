@@ -30,6 +30,9 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // Públicos: ver alojamientos y reseñas sin iniciar sesión
+                .requestMatchers(HttpMethod.GET, "/api/alojamientos/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/resenas/alojamiento/*/resumen").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth -> oauth
@@ -51,7 +54,8 @@ public class SecurityConfig {
             @SuppressWarnings("unchecked")
             Collection<String> roles = (Collection<String>) realmAccess.get("roles");
             return roles.stream()
-                    .map(rol -> (GrantedAuthority) new SimpleGrantedAuthority("ROLE_" + rol))
+                    .map(rol -> rol.startsWith("ROLE_") ? rol : "ROLE_" + rol)
+                    .map(rol -> (GrantedAuthority) new SimpleGrantedAuthority(rol))
                     .toList();
         });
         return converter;

@@ -108,7 +108,7 @@ public class UsuarioService {
             return false;
         }
         Collection<?> roles = (Collection<?>) realmAccess.get("roles");
-        return roles.contains("ADMIN");
+        return roles.contains("ADMIN") || roles.contains("ROLE_ADMIN");
     }
 
 

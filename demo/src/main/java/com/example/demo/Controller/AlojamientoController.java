@@ -25,7 +25,6 @@ public class AlojamientoController {
 
     //Obtener todos los alojamientos
     @GetMapping 
-    @PreAuthorize ("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION') or hasRole('ROLE_HUESPED')")
     public ResponseEntity<List<AlojamientoEntity>> getAllAlojamientos() {
         List<AlojamientoEntity> alojamientos = alojamientoService.getAllAlojamientos();
         return new ResponseEntity<>(alojamientos, HttpStatus.OK);
@@ -33,7 +32,6 @@ public class AlojamientoController {
 
     //Obtener alojamiento por id
     @GetMapping("/{id}")
-    @PreAuthorize ("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getAlojamientoById(@PathVariable Integer id){
         //Se verifica si el alojamiento existe
         Optional<AlojamientoEntity> alojamiento = alojamientoService.getAlojamientoById(id);
@@ -186,7 +184,6 @@ public class AlojamientoController {
 
     // Endpoint para buscar alojamientos disponibles
     @GetMapping("/buscar")
-    @PreAuthorize ("hasRole('ROLE_ADMIN') or hasRole('ROLE_ANFITRION') or hasRole('ROLE_HUESPED')")
     public ResponseEntity<?> buscarAlojamientos(@RequestParam String ciudad, @RequestParam String fechaInicio, @RequestParam String fechaFin,@RequestParam Integer huespedes) {
         //Se buscan los alojamientos que estan disponibles en la ciudad, fechas y cantidad de huespedes especificados
         List<AlojamientoEntity> disponibles = alojamientoService.buscarDisponibles(

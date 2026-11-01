@@ -23,14 +23,16 @@ export default function App({ keycloak }) {
 
 
     useEffect(() => {
-    if (keycloak && keycloak.authenticated) {
-      const roles = keycloak.tokenParsed?.realm_access?.roles || [];
-      setUsuarioActual({
-        id: keycloak.tokenParsed?.sub,
-        nombre: keycloak.tokenParsed?.name || keycloak.tokenParsed?.preferred_username,
-        email: keycloak.tokenParsed?.email,
-        roles: roles,
-      });
+      if (keycloak && keycloak.authenticated) {
+        const roles = keycloak.tokenParsed?.realm_access?.roles || [];
+        axiosClient.get('/usuarios/me').then((res) => {
+          setUsuarioActual({
+            idUsuario: res.data.id_usuario,
+            nombre: keycloak.tokenParsed?.name || keycloak.tokenParsed?.preferred_username,
+            email: keycloak.tokenParsed?.email,
+            roles: roles,
+          });
+        });
       } else {
         setUsuarioActual(null);
       }
@@ -60,7 +62,7 @@ export default function App({ keycloak }) {
                 return;
             }
             try {
-                const response = await axiosClient.get(`/reservas/usuario/${1}`); // CAMBIAR CAMBIAR CAMBIAR
+                const response = await axiosClient.get(`/reservas/usuario/${usuarioActual.idUsuario}`);
                 setMisReservas(response.data);
             } catch (err) {
                 console.error('Error al cargar las reservas desde la BD:', err);
@@ -105,8 +107,8 @@ export default function App({ keycloak }) {
 
     const handleConfirmarReserva = async (datosReserva) => {
         try {
-            await reservaService.confirmarReserva(datosReserva)
-            const idGenerado = response.data?.idReserva;
+            const data = await reservaService.confirmarReserva(datosReserva);
+            const idGenerado = data?.idReserva;
             const nuevaReserva = {
                 id: idGenerado,
                 ...datosReserva,
@@ -227,7 +229,7 @@ export default function App({ keycloak }) {
       {alojamientoSeleccionado && (
         <ReservaModal
           alojamiento={alojamientoSeleccionado}
-          idUsuarioActual={1} //CAMBIAR CAMBIAR CAMBIAR CAMBIAR CAMBIAR CAMBIAR
+          idUsuarioActual={usuarioActual?.idUsuario}
           onClose={() => setAlojamientoSeleccionado(null)}
           onConfirmarReserva={handleConfirmarReserva}
         />

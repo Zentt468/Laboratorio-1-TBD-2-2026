@@ -42,7 +42,7 @@ export default function ReservaModal({ alojamiento, onClose, onConfirmarReserva,
       idAlojamiento: alojamiento.id_alojamiento,
       fechaInicio: fechaInicio,
       fechaFin: fechaFin,
-      nHuespedes: Number(huespedes),
+      cantidadHuespedes: Number(huespedes),
       tipoPago: tipoPago,
     };
 

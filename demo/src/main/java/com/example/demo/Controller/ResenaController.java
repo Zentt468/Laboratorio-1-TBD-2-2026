@@ -129,7 +129,6 @@ public class ResenaController {
 
     // Endpoint para obtener el promedio y el historial de un alojamiento
     @GetMapping("/alojamiento/{idAlojamiento}/resumen")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_HUESPED') or hasRole('ROLE_ANFITRION')")
     public ResponseEntity<?> getResumenResenas(@PathVariable Integer idAlojamiento) {
         
         // Validamos si el alojamiento realmente existe usando el alojamientoService
