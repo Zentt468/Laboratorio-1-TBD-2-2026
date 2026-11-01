@@ -62,6 +62,15 @@ export default function Navbar({
                 </button>
             )}
 
+            {esAdmin && (
+                <button
+                    className={`btn btn-link text-decoration-none ${vistaActual === 'dashboard' ? 'fw-bold text-primary' : 'text-dark'}`}
+                    onClick={() => setVistaActual('dashboard')}
+                >
+                    Dashboard Reportes
+                </button>
+            )}
+
           {usuarioActual ? (
             <div className="d-flex align-items-center gap-2 ms-2">
               <span className="small fw-semibold text-secondary d-flex align-items-center gap-1">
