@@ -149,9 +149,10 @@ export default function App({ keycloak }) {
           const nuevoAlojamiento = await alojamientoService.save(datosFormulario);
           setAlojamientos((prev) => [nuevoAlojamiento, ...prev]);
           setVistaActual('home');
-        } catch (err) {
+         } catch (err) {
           console.error('Error al publicar el alojamiento:', err);
-          alert('Error al guardar la propiedad en la base de datos.');
+          const mensaje = err.response?.data?.error || 'Error al guardar la propiedad en la base de datos.';
+          alert(mensaje);
         }
     };
 

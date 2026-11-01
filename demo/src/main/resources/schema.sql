@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS usuario (
 CREATE TABLE IF NOT EXISTS alojamiento (
 	id_alojamiento SERIAL PRIMARY KEY,
 	id_usuario INT NOT NULL REFERENCES usuario(id_usuario) ON DELETE CASCADE,
-	titulo VARCHAR(30) NOT NULL,
+	titulo VARCHAR(100) NOT NULL,
 	tipo_alojamiento VARCHAR(30) NOT NULL,
 	ciudad VARCHAR(30) NOT NULL,
 	direccion VARCHAR(150) NOT NULL,
@@ -105,3 +105,4 @@ WHERE r.estado_reserva IN ('CONFIRMADA', 'FINALIZADA')
 GROUP BY a.ciudad, a.tipo_alojamiento, anio, mes^;
 
 ALTER TABLE auditoria ALTER COLUMN usuario_cambio TYPE VARCHAR(100)^;
+ALTER TABLE alojamiento ALTER COLUMN titulo TYPE VARCHAR(100)^;

@@ -10,7 +10,7 @@ export default function PublicarAlojamientoPage({ onPublicarExitoso, onCancelar 
     capacidad: 2,
     estadia_min: 1,
     precio_noche: '',
-    politica_cancel: 'Flexible',
+    politica_cancel: 'flexible',
     imagenUrl: '',
   });
 
@@ -80,9 +80,10 @@ export default function PublicarAlojamientoPage({ onPublicarExitoso, onCancelar 
           {/* Título de la publicación */}
           <div className="mb-3">
             <label className="form-label fw-semibold small text-muted">Título del alojamiento</label>
-            <input
+             <input
               type="text"
               name="titulo"
+              maxLength={100}
               className="form-control"
               placeholder="Ej. Cabaña frente al lago con tinaja"
               value={formData.titulo}
