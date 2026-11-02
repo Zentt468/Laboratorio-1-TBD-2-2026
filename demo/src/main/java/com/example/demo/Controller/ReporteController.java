@@ -21,4 +21,12 @@ public class ReporteController {
     public ResponseEntity<List<ReporteOcupacionDTO>> getReporteOcupacion() {
         return ResponseEntity.ok(reporteService.obtenerReporte());
     }
+
+    // Refresca el reporte de ocupación
+    @PostMapping("/ocupacion/refrescar")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<ReporteOcupacionDTO>> refrescarReporte() {
+        reporteService.refrescarReporteDiario();
+        return ResponseEntity.ok(reporteService.obtenerReporte());
+    }
 }

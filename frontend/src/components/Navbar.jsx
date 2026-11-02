@@ -52,6 +52,14 @@ export default function Navbar({
             Mis viajes
           </button>
           )}
+              {esAdmin && (
+                <button
+                    className={`btn btn-link text-decoration-none ${vistaActual === 'dashboard' ? 'fw-bold text-primary' : 'text-dark'}`}
+                    onClick={() => setVistaActual('dashboard')}
+                >
+                    Dashboard
+                </button>
+            )}
 
             {esAdmin && (
                 <button
@@ -60,6 +68,7 @@ export default function Navbar({
                 >
                     Auditorías
                 </button>
+                
             )}
 
           {usuarioActual ? (

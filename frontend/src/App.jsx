@@ -6,6 +6,7 @@ import ReservaModal from './components/ReservaModal';
 import MisViajesPage from './pages/MisViajesPage';
 import PublicarAlojamientoPage from './pages/PublicarAlojamientoPage';
 import AuditoriasPage from './pages/AuditoriasPage';
+import DashboardPage from './pages/DashboardPage';
 import { alojamientoService } from './services/alojamientoService';
 import { reservaService } from './services/reservaService';
 import axiosClient from './api/axiosClient';
@@ -251,6 +252,11 @@ export default function App({ keycloak }) {
         )}
           {vistaActual === 'auditorias' && (
               <AuditoriasPage
+                  onVolverHome={() => setVistaActual('home')}
+              />
+          )}
+               {vistaActual === 'dashboard' && (
+              <DashboardPage
                   onVolverHome={() => setVistaActual('home')}
               />
           )}
