@@ -7,6 +7,14 @@ export const alojamientoService = {
     return response.data;
   },
 
+  // buscar alojamientos disponibles 
+  buscarDisponibles: async ({ ciudad, fechaInicio, fechaFin, huespedes }) => {
+    const response = await axiosClient.get('/alojamientos/buscar', {
+      params: { ciudad, fechaInicio, fechaFin, huespedes },
+    });
+    return response.data;
+  },
+
   // obtener por ID
   getById: async (id) => {
     const response = await axiosClient.get(`/alojamientos/${id}`);

@@ -87,15 +87,34 @@ export default function App({ keycloak }) {
     };
 
     // Funciones para manejar la búsqueda y la reserva
-    const handleBuscar = (filtros) => {
-        if (!filtros.ciudad.trim()) {
-            setAlojamientos(ALOJAMIENTOS_MOCK);
-            return;
+    const handleBuscar = async (filtros) => {
+      // Sin filtros completos: se muestra la lista completa
+      if (!filtros.ciudad.trim() || !filtros.fechaInicio || !filtros.fechaFin) {
+          const todos = await alojamientoService.getAll();
+          setAlojamientos(todos);
+          if (filtros.ciudad.trim() || filtros.fechaInicio || filtros.fechaFin) {
+              alert('Para buscar disponibilidad, ingresa ciudad, llegada y salida.');
+            }
+          return;
+      }
+      try{
+          const disponibles = await alojamientoService.buscarDisponibles({
+              ciudad: filtros.ciudad.trim(),
+              fechaInicio: filtros.fechaInicio,
+              fechaFin: filtros.fechaFin,
+              huespedes: filtros.huespedes,
+          });
+          setAlojamientos(disponibles);
+        }catch (err) {
+          if (err.response?.status === 404) {
+              // El back responde 404 cuando no hay resultados
+              setAlojamientos([]);
+              alert('No hay alojamientos disponibles con esas características.');
+            }else{
+              console.error('Error al buscar alojamientos:', err);
+              alert('No se pudo realizar la búsqueda.');
+            }
         }
-        const filtrados = ALOJAMIENTOS_MOCK.filter((item) =>
-            item.ciudad.toLowerCase().includes(filtros.ciudad.toLowerCase())
-        );
-        setAlojamientos(filtrados);
     };
 
     const handleAbrirModal = (alojamiento) => {
